@@ -21,13 +21,14 @@ _(vazio)_
 
 ## Revisão
 
-- [ ] P0-S0-04 · Núcleo da Central de Erros — pronta na branch `feat/P0-S0-04-error-center`; junta na `main` com a CI verde
+_(vazio)_
 
 ## Feito
 
 - [x] P0-S0-01 · Criar o projeto Expo com TypeScript strict (2026-11-05; conferida no Samsung pelo Expo Go, SDK 58, via túnel)
 - [x] P0-S0-02 · Qualidade automática: lint, formatação, testes, cobertura (2026-11-05)
-- [x] P0-S0-03 · Integração contínua no GitHub (2026-11-06; CI verde na branch antes de juntar)
+- [x] P0-S0-03 · Integração contínua no GitHub (2026-11-06; CI verde na branch antes de juntar; CI da `main` verde)
+- [x] P0-S0-04 · Núcleo da Central de Erros (2026-11-06; CI verde na branch)
 
 ## Bugs
 
@@ -72,4 +73,4 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 
 | Sprint | Histórias feitas | Bugs abertos/fechados | Erros na Central (novos) | Cobertura core | `plan()` (ms) |
 |---|---|---|---|---|---|
-| S0 | 3 | 1 / 1 | — | 100% | — |
+| S0 | 4 | 1 / 1 | — | 100% | — |
