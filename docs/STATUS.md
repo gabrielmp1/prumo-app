@@ -36,6 +36,10 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 
 - BUG-001 · Jest (jest-expo) quebra quando o caminho da pasta tem parênteses, ex. `Nova pasta (9)`: o mock automático lê o caminho pelo rastro de pilha · ambiente · P0-S0-01 · **resolvido** em 2026-11-05 (causa: parênteses no caminho da pasta; projeto copiado para `C:\Users\ggabr\Projetos\prumo-app`, onde `npm ci` e `npm run check` passaram)
 
+## Observações de ambiente (não são bugs do app)
+
+- 2026-11-05 · Expo Go no Samsung conectava pelo QR, mas mostrava `java.io.IOException: Failed to download remote update`: o celular não conseguia baixar o bundle do PC pela rede local (firewall do Windows ou isolamento do Wi-Fi). Solução: `npx expo start --tunnel ngrok`, com `@expo/ngrok` como dependência de desenvolvimento do projeto (sem instalação global). No SDK 58, `--tunnel` sozinho exige login na conta Expo. Dica registrada no README.
+
 ## Ideias (não entram na sprint sem passar pelo planejamento)
 
 - Integração com calendário do Moodle (assinatura iCal) — avaliar na Fase 3

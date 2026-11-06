@@ -39,6 +39,26 @@ de referência. O Claude Code vai criar o código história por história, sempr
    **Central de Erros** dentro do app (Ajustes → toque 5 vezes na versão), toque em
    **Copiar relatório** e cole no Claude Code com `/investigar-erro`.
 
+## Abrir o app no celular (Expo Go)
+
+1. A pasta do projeto **não pode ter parênteses no caminho** (ex.: `Nova pasta (9)`): os testes
+   quebram. Use algo como `C:\Users\<você>\Projetos\prumo-app`.
+2. No PowerShell, dentro da pasta do projeto: `npx expo start`.
+3. No celular, no mesmo Wi-Fi do PC, abra o **Expo Go** → **Scan QR code** e aponte para o QR.
+
+**Dica para Windows:** se o Expo Go mostrar `java.io.IOException: Failed to download remote update`,
+o celular não está conseguindo baixar o app do PC. Isso costuma acontecer por causa do firewall do
+Windows ou do isolamento da rede Wi-Fi. Pare o servidor (`Ctrl+C`) e use o túnel:
+
+```bash
+npx expo start --tunnel ngrok
+```
+
+- O `@expo/ngrok` já está nas dependências de desenvolvimento do projeto; não precisa instalar nada global.
+- No SDK 58, `--tunnel` sozinho usa o túnel da própria Expo e exige login numa conta Expo
+  (`npx expo login`). Com `--tunnel ngrok`, não precisa de conta.
+- O túnel é mais lento que a rede local, mas funciona em qualquer rede.
+
 ## Comandos disponíveis no Claude Code
 
 | Comando | O que faz |
