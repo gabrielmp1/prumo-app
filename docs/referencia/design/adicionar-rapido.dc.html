@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Prumo — Adicionar rápido</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<style>
+body{margin:0}
+a{color:#16213A}a:hover{color:#2B3A60}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #34456B; color: #16213A; font-family: 'Recursive', system-ui, sans-serif; font-variation-settings: 'CASL' 0, 'MONO' 0; position: relative; overflow: hidden">
+
+  <div aria-hidden="true" style="padding: 26px 16px; display: flex; flex-direction: column; gap: 14px; opacity: 0.35">
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px"><span style="height: 170px; border-radius: 26px; background: #FBFCFE"></span><span></span></div>
+    <span style="height: 172px; border-radius: 26px; background: #FBFCFE"></span>
+  </div>
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(12,18,34,0.55)"></div>
+
+  <section role="dialog" aria-label="Adicionar ao Prumo" style="position: absolute; left: 14px; right: 14px; bottom: 28px; background-color: #FBFCFE; background-image: linear-gradient(#E4EAF3 1px, transparent 1px), linear-gradient(90deg, #E4EAF3 1px, transparent 1px); background-size: 20px 20px; border: 2px solid #16213A; border-radius: 10px; box-shadow: 6px 6px 0 #16213A; padding: 18px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <span style="font-variation-settings: 'CASL' 1; font-size: 20px; font-weight: 900">Adicionar<span style="color: #D9361E">.</span></span>
+      <span style="font-variation-settings: 'MONO' 1; font-size: 12px; font-weight: 600; color: #D9361E; display: flex; align-items: center; gap: 6px"><span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; background: #D9361E"></span>OUVINDO</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <label for="q4" style="font-size: 12px; font-weight: 700; color: #4A5672">Você disse</label>
+      <textarea id="q4" rows="2" style="border: 0; border-bottom: 2px solid #16213A; background: transparent; font: inherit; font-variation-settings: 'CASL' 1; font-size: 21px; font-weight: 700; line-height: 1.35; color: #16213A; resize: none; outline: none; padding: 0 0 6px">prova de física sexta às dez, importante</textarea>
+    </div>
+
+    <div style="background: #FFFFFF; border: 2px dashed #8792AA; border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 12px; font-weight: 700; color: #4A5672">Vou criar</span>
+      <span style="font-size: 17px; font-weight: 800"><span style="background: linear-gradient(transparent 52%, #FFB8DA 52%, #FFB8DA 92%, transparent 92%)">Prova de Física</span></span>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px">
+        <sc-for list="{{chips}}" as="c" hint-placeholder-count="4">
+          <button type="button" style="height: 32px; border: 1.5px solid #16213A; border-radius: 6px; background: #FBFCFE; font: inherit; font-size: 13px; font-weight: 700; color: #16213A; padding: 0 10px">{{c}}</button>
+        </sc-for>
+      </div>
+      <span style="font-size: 13px; font-weight: 600; color: #16213A">E uma tarefa "Estudar para a prova" na quinta.</span>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 52px minmax(0, 1fr) minmax(0, 1.3fr); gap: 8px">
+      <button type="button" aria-label="Parar de ouvir" style="height: 52px; border-radius: 50%; border: 0; background: #D9361E; color: #FFFFFF; display: grid; place-items: center">
+        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+      </button>
+      <button type="button" style="height: 52px; border: 2px solid #16213A; border-radius: 8px; background: #FFFFFF; font: inherit; font-weight: 800; font-size: 15px; color: #16213A">Abrir no app</button>
+      <button type="button" style="height: 52px; border: 0; border-radius: 8px; background: #16213A; font: inherit; font-weight: 800; font-size: 15px; color: #FFE45C">Salvar</button>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { chips: ['Compromisso', 'sex 30/10', '10:00', 'Física I', 'importante'] };
+  }
+}
+</script>
+</body>
+</html>

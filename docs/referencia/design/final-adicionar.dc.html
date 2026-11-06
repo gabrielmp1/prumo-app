@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Prumo — Adicionar (final)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<style>
+body{margin:0}
+a{color:#16213A}a:hover{color:#2B3A60}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background-color: #FBFCFE; background-image: linear-gradient(#EEF2F8 1px, transparent 1px), linear-gradient(90deg, #EEF2F8 1px, transparent 1px); background-size: 22px 22px; color: #16213A; font-family: 'Recursive', system-ui, sans-serif; font-variation-settings: 'CASL' 0, 'MONO' 0; position: relative; overflow: hidden">
+
+  <div aria-hidden="true" style="padding: 20px; display: flex; flex-direction: column; gap: 12px; opacity: 0.45">
+    <span style="font-variation-settings: 'CASL' 1; font-size: 40px; font-weight: 900">Hoje.</span>
+    <span style="height: 58px; border: 2px solid #16213A; border-radius: 10px; background: #FFFFFF"></span>
+    <span style="height: 92px; border: 2px solid #16213A; border-radius: 12px; background: #FFFFFF"></span>
+  </div>
+  <div aria-hidden="true" style="position: absolute; inset: 0; background: rgba(22,33,58,0.45)"></div>
+
+  <section role="dialog" aria-label="Adicionar" style="position: absolute; left: 0; right: 0; bottom: 0; background-color: #FBFCFE; background-image: linear-gradient(#EEF2F8 1px, transparent 1px), linear-gradient(90deg, #EEF2F8 1px, transparent 1px); background-size: 22px 22px; border-top: 2px solid #16213A; border-radius: 22px 22px 0 0; padding: 10px 18px 22px; display: flex; flex-direction: column; gap: 16px">
+    <span aria-hidden="true" style="align-self: center; width: 44px; height: 5px; border-radius: 5px; background: #16213A"></span>
+
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <label for="t5" style="font-variation-settings: 'CASL' 1; font-size: 20px; font-weight: 900">O que você precisa fazer?</label>
+      <textarea id="t5" rows="2" style="border: 2px solid #16213A; border-radius: 12px; background: #FFFFFF; padding: 12px 14px; font: inherit; font-variation-settings: 'CASL' 1; font-size: 18px; font-weight: 700; line-height: 1.4; color: #16213A; resize: none; outline: none">Lista 4 de Cálculo até 05/11 3h</textarea>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{sources}}" as="s" hint-placeholder-count="4">
+        <button type="button" style="height: 66px; border: 2px solid #16213A; border-radius: 12px; background: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font: inherit; font-size: 12px; font-weight: 700; color: #16213A">
+          <sc-if value="{{s.mic}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></sc-if>
+          <sc-if value="{{s.cam}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></sc-if>
+          <sc-if value="{{s.file}}" hint-placeholder-val="{{ false }}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg></sc-if>
+          <sc-if value="{{s.paste}}" hint-placeholder-val="{{ true }}"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6"/></svg></sc-if>
+          {{s.label}}
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="background: #FFFFFF; border: 2px dashed #16213A; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px">
+      <span style="font-variation-settings: 'CASL' 1; font-size: 15px; font-weight: 900">Entendi assim</span>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px">
+        <sc-for list="{{chips}}" as="c" hint-placeholder-count="4">
+          <button type="button" style="height: 34px; border: 1.5px solid #16213A; border-radius: 8px; background: {{c.bg}}; padding: 0 10px; font: inherit; font-size: 13px; font-weight: 700; color: #16213A">{{c.label}}</button>
+        </sc-for>
+      </div>
+      <span style="font-size: 13.5px; font-weight: 600; color: #4A5672">Vou reservar o tempo em 4 dias antes do prazo:</span>
+      <div style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; align-items: end; height: 70px">
+        <sc-for list="{{bars}}" as="b" hint-placeholder-count="7">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+            <span style="width: 100%; height: {{b.h}}px; border: 1.5px solid #16213A; border-radius: 4px; background: {{b.c}}; box-sizing: border-box"></span>
+            <span style="font-variation-settings: 'MONO' 1; font-size: 10.5px; font-weight: 600; color: {{b.tc}}">{{b.d}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 10px">
+      <button type="button" style="flex: 1; height: 52px; border: 2px solid #16213A; border-radius: 12px; background: #FFFFFF; font: inherit; font-weight: 800; font-size: 15px; color: #16213A">Ajustar</button>
+      <button type="button" style="flex: 1.5; height: 52px; border: 0; border-radius: 12px; background: #16213A; box-shadow: 4px 4px 0 {{accent}}; font: inherit; font-weight: 800; font-size: 15px; color: #FFFFFF">Adicionar tarefa</button>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#FFE45C","options":["#FFE45C","#9BEA9B","#FFB8DA","#A9DCFF"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#FFE45C';
+    const sources = [
+      { label: 'Falar', mic: true }, { label: 'Foto', cam: true },
+      { label: 'Arquivo', file: true }, { label: 'Colar', paste: true }
+    ];
+    const chips = [
+      { label: 'Tarefa', bg: accent }, { label: 'prazo qui 05/11', bg: '#FFFFFF' },
+      { label: '3h', bg: '#FFFFFF' }, { label: 'Cálculo I', bg: '#A9DCFF' }
+    ];
+    const ds = ['qua', 'qui', 'sex', 'sáb', 'dom', 'seg', 'ter'];
+    const hs = [34, 0, 34, 0, 52, 52, 0];
+    const bars = ds.map((d, i) => ({ d: d, h: hs[i] || 8, c: hs[i] ? accent : '#FFFFFF', tc: hs[i] ? '#16213A' : '#4A5672' }));
+    return { accent: accent, sources: sources, chips: chips, bars: bars };
+  }
+}
+</script>
+</body>
+</html>

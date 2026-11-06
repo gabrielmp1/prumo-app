@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Prumo — Matéria (final)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<style>
+body{margin:0}
+a{color:#16213A}a:hover{color:#2B3A60}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background-color: #FBFCFE; background-image: linear-gradient(#EEF2F8 1px, transparent 1px), linear-gradient(90deg, #EEF2F8 1px, transparent 1px); background-size: 22px 22px; color: #16213A; font-family: 'Recursive', system-ui, sans-serif; font-variation-settings: 'CASL' 0, 'MONO' 0; display: flex; flex-direction: column; overflow: hidden; padding: 18px 16px 0; gap: 14px">
+
+  <header style="display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <button aria-label="Voltar" style="width: 44px; height: 44px; border-radius: 12px; border: 2px solid #16213A; background: #FFFFFF; color: #16213A; display: grid; place-items: center">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <span style="font-variation-settings: 'MONO' 1; font-size: 12px; font-weight: 600; color: #4A5672">SEG, QUA 14:00–15:40 · B-204</span>
+    </div>
+    <h1 style="margin: 0; font-variation-settings: 'CASL' 1; font-size: 38px; font-weight: 900; line-height: 1"><span style="background: linear-gradient(transparent 55%, #A9DCFF 55%, #A9DCFF 92%, transparent 92%); padding: 0 4px">Cálculo I</span></h1>
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{stats}}" as="s" hint-placeholder-count="3">
+        <div style="border: 2px solid #16213A; border-radius: 10px; background: #FFFFFF; padding: 8px 10px; display: flex; flex-direction: column">
+          <span style="font-variation-settings: 'CASL' 1; font-size: 20px; font-weight: 900">{{s.v}}</span>
+          <span style="font-size: 12px; font-weight: 600; color: #4A5672">{{s.l}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </header>
+
+  <section aria-label="Próxima prova" style="background: #FFFFFF; border: 2px solid #16213A; border-radius: 12px; box-shadow: 4px 4px 0 #16213A; padding: 12px 14px; display: flex; align-items: center; gap: 12px">
+    <span style="width: 50px; height: 54px; border: 2px solid #D9361E; border-radius: 50%; color: #D9361E; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: none; line-height: 1">
+      <span style="font-variation-settings: 'CASL' 1; font-size: 18px; font-weight: 900">11</span>
+      <span style="font-size: 10px; font-weight: 800; text-transform: uppercase">nov</span>
+    </span>
+    <span style="display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0">
+      <span style="font-size: 16px; font-weight: 800">Prova P1</span>
+      <span style="font-size: 13px; font-weight: 500; color: #4A5672">em 14 dias · 6 revisões agendadas</span>
+    </span>
+    <button style="height: 40px; border: 0; border-radius: 10px; background: #16213A; color: #FFE45C; font: inherit; font-weight: 800; font-size: 13px; padding: 0 12px">Revisar</button>
+  </section>
+
+  <section aria-label="Tarefas" style="display: flex; flex-direction: column; gap: 2px">
+    <h2 style="margin: 0 0 4px; font-variation-settings: 'CASL' 1; font-size: 18px; font-weight: 900">Tarefas</h2>
+    <sc-for list="{{tasks}}" as="t" hint-placeholder-count="2">
+      <div style="display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: center; min-height: 56px">
+        <button aria-label="Concluir {{t.title}}" style="width: 44px; height: 44px; border: 0; background: transparent; display: grid; place-items: center; padding: 0">
+          <span style="width: 22px; height: 22px; border: 2.5px solid #16213A; border-radius: 5px"></span>
+        </button>
+        <span style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <span style="font-size: 15px; font-weight: 700"><span style="background: linear-gradient(transparent 55%, #FFE45C 55%, #FFE45C 92%, transparent 92%)">{{t.title}}</span></span>
+          <span style="height: 6px; border: 1.5px solid #16213A; border-radius: 6px; background: #FFFFFF; overflow: hidden; display: block"><span style="display: block; height: 100%; width: {{t.pct}}; background: #16213A"></span></span>
+          <span style="font-size: 12px; font-weight: 500; color: #4A5672">{{t.meta}}</span>
+        </span>
+      </div>
+    </sc-for>
+  </section>
+
+  <section aria-label="Notas e arquivos" style="display: flex; flex-direction: column; gap: 8px">
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <h2 style="margin: 0; font-variation-settings: 'CASL' 1; font-size: 18px; font-weight: 900">Notas e arquivos</h2>
+      <button style="height: 40px; border: 2px solid #16213A; border-radius: 10px; background: #FFFFFF; font: inherit; font-size: 13px; font-weight: 800; padding: 0 12px">Nova nota</button>
+    </div>
+    <div style="border-left: 2px solid #F2A3A3; padding-left: 12px; display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 15px; font-weight: 800">Limites: resumo da aula</span>
+      <span style="font-size: 13px; font-weight: 500; color: #4A5672; line-height: 1.4">0/0: fatorar ou racionalizar antes de L'Hôpital. P1 cobre capítulos 1 a 3.</span>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{files}}" as="f" hint-placeholder-count="4">
+        <button aria-label="Abrir {{f.n}}" style="height: 64px; border: 2px solid #16213A; border-radius: 10px; background: {{f.bg}}; font-variation-settings: 'MONO' 1; font-size: 11px; font-weight: 600; color: #16213A">{{f.t}}</button>
+      </sc-for>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      stats: [{ v: '50%', l: 'tarefas feitas' }, { v: '3', l: 'notas' }, { v: '1,4x', l: 'seu ritmo' }],
+      tasks: [
+        { title: 'Lista 3 de Cálculo', pct: '25%', meta: 'prazo 04/11 · 1h de 4h15' },
+        { title: 'Estudar para a P1', pct: '0%', meta: 'prazo 10/11 · começa amanhã' }
+      ],
+      files: [
+        { t: 'QUADRO', n: 'foto do quadro', bg: '#A9DCFF' }, { t: 'PDF', n: 'lista 3', bg: '#FFFFFF' },
+        { t: 'PDF', n: 'plano de ensino', bg: '#FFFFFF' }, { t: '+2', n: 'mais 2 arquivos', bg: '#FFFFFF' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

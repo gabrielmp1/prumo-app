@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Prumo — Hoje (escuro)</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap">
+<style>
+body{margin:0}
+a{color:#E9EEF8}a:hover{color:#FFFFFF}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background-color: #101727; background-image: linear-gradient(#172036 1px, transparent 1px), linear-gradient(90deg, #172036 1px, transparent 1px); background-size: 22px 22px; color: #E9EEF8; font-family: 'Recursive', system-ui, sans-serif; font-variation-settings: 'CASL' 0, 'MONO' 0; display: flex; flex-direction: column; overflow: hidden; position: relative">
+
+  <header style="padding: 20px 20px 10px; display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-variation-settings: 'MONO' 1; font-size: 13px; font-weight: 600; color: #A7B2C9">QUA · 28 OUT</span>
+        <h1 style="margin: 0; font-variation-settings: 'CASL' 1; font-size: 40px; font-weight: 900; line-height: 1">Hoje<span style="color: #FF7A63">.</span></h1>
+      </div>
+      <button aria-label="Ajustes" style="width: 44px; height: 44px; border-radius: 12px; border: 2px solid #8A98B8; background: #18223A; color: #E9EEF8; display: grid; place-items: center">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+      </button>
+    </div>
+    <nav aria-label="Dias da semana" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px">
+      <sc-for list="{{days}}" as="d" hint-placeholder-count="7">
+        <button aria-current="{{d.cur}}" style="height: 58px; border: 2px solid #8A98B8; border-radius: 10px; background: {{d.bg}}; color: {{d.fg}}; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 0">
+          <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em">{{d.w}}</span>
+          <span style="font-variation-settings: 'CASL' 1; font-size: 18px; font-weight: 900">{{d.n}}</span>
+        </button>
+      </sc-for>
+    </nav>
+  </header>
+
+  <main style="flex: 1; overflow: hidden; padding: 6px 16px 0; display: flex; flex-direction: column; gap: 12px">
+    <section aria-label="Agora" style="background: #18223A; border: 2px solid #8A98B8; border-radius: 12px; box-shadow: 4px 4px 0 {{accent}}; padding: 14px; display: flex; gap: 14px; align-items: center">
+      <svg role="img" aria-label="Faltam 32 de 45 minutos" width="62" height="62" viewBox="0 0 64 64" style="flex: none">
+        <circle cx="32" cy="32" r="26" fill="none" stroke="#2E3B5E" stroke-width="8"/>
+        <circle cx="32" cy="32" r="26" fill="none" stroke="{{accent}}" stroke-width="8" stroke-dasharray="116 164" transform="rotate(-90 32 32)"/>
+        <text x="32" y="37" text-anchor="middle" font-family="Recursive, monospace" font-size="15" font-weight="700" fill="#E9EEF8">32</text>
+      </svg>
+      <div style="display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0">
+        <span style="font-variation-settings: 'CASL' 1; font-size: 13px; font-weight: 800; color: #FF7A63">agora → até 16:25</span>
+        <span style="font-size: 18px; font-weight: 800; line-height: 1.25"><span style="background: linear-gradient(transparent 58%, {{hlTask}} 58%, {{hlTask}} 96%, transparent 96%); padding: 0 2px">Lista 3 de Cálculo</span></span>
+        <span style="font-size: 13px; font-weight: 500; color: #A7B2C9">bloco de 45 min · faltam 32</span>
+      </div>
+      <button aria-label="Marcar bloco como feito" style="width: 44px; height: 44px; border: 0; background: transparent; display: grid; place-items: center; flex: none; padding: 0">
+        <span style="width: 26px; height: 26px; border: 2.5px solid #E9EEF8; border-radius: 6px"></span>
+      </button>
+    </section>
+
+    <div style="display: flex; gap: 8px">
+      <button style="height: 36px; border: 1.5px solid #8A98B8; border-radius: 8px; background: #18223A; padding: 0 10px; font: inherit; font-size: 13px; font-weight: 700; color: #E9EEF8">2 prazos <span style="color: #FF7A63">esta semana</span></button>
+      <button style="height: 36px; border: 1.5px solid #8A98B8; border-radius: 8px; background: #18223A; padding: 0 10px; font: inherit; font-size: 13px; font-weight: 700; color: #E9EEF8">P1 <span style="color: #FF7A63">em 14 dias</span></button>
+    </div>
+
+    <section aria-label="Linha do tempo" style="display: flex; flex-direction: column; position: relative">
+      <span aria-hidden="true" style="position: absolute; top: 0; bottom: 0; left: 52px; width: 2px; background: #7A3B46"></span>
+      <sc-for list="{{rows}}" as="r" hint-placeholder-count="4">
+        <div style="display: grid; grid-template-columns: 52px minmax(0, 1fr) 44px; align-items: center; min-height: 58px">
+          <span style="font-variation-settings: 'MONO' 1; font-size: 12px; font-weight: 600; color: #A7B2C9; text-align: right; padding-right: 8px">{{r.t}}</span>
+          <div style="padding-left: 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0">
+            <span style="font-size: 16px; font-weight: 700; line-height: 1.3"><span style="background: linear-gradient(transparent 58%, {{r.hl}} 58%, {{r.hl}} 96%, transparent 96%); padding: 0 2px">{{r.title}}</span></span>
+            <span style="font-size: 12.5px; font-weight: 500; color: #A7B2C9">{{r.sub}}</span>
+          </div>
+          <sc-if value="{{r.check}}" hint-placeholder-val="{{ true }}">
+            <button aria-label="Concluir {{r.title}}" style="width: 44px; height: 44px; border: 0; background: transparent; display: grid; place-items: center; padding: 0">
+              <span style="width: 22px; height: 22px; border: 2.5px solid #E9EEF8; border-radius: 5px"></span>
+            </button>
+          </sc-if>
+        </div>
+      </sc-for>
+    </section>
+  </main>
+
+  <div style="padding: 10px 16px 0; background: #101727; border-top: 2px solid #8A98B8">
+    <form style="display: flex; gap: 8px; align-items: center">
+      <label for="add5d" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Adicionar</label>
+      <input id="add5d" placeholder="escreva ou fale… ex.: lista 4 até 05/11 3h" style="flex: 1; min-width: 0; height: 48px; border: 2px solid #8A98B8; border-radius: 12px; background: #18223A; font: inherit; font-variation-settings: 'CASL' 1; font-size: 15px; color: #E9EEF8; outline: none; padding: 0 12px">
+      <button type="button" aria-label="Anexar foto ou arquivo" style="width: 48px; height: 48px; border-radius: 12px; border: 2px solid #8A98B8; background: #18223A; color: #E9EEF8; display: grid; place-items: center">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.5l-8.4 8.4a5 5 0 0 1-7.1-7.1l8.8-8.8a3.3 3.3 0 0 1 4.7 4.7l-8.8 8.8a1.7 1.7 0 0 1-2.4-2.4l8-8"/></svg>
+      </button>
+      <button type="button" aria-label="Falar" style="width: 48px; height: 48px; border-radius: 12px; border: 0; background: {{accent}}; color: #16213A; display: grid; place-items: center">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </button>
+    </form>
+    <nav aria-label="Navegação" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 6px 0 12px">
+      <sc-for list="{{tabs}}" as="tb" hint-placeholder-count="4">
+        <a href="#" style="height: 44px; display: grid; place-items: center; text-decoration: none; font-variation-settings: 'CASL' 1; font-size: 15px; font-weight: {{tb.w}}; color: {{tb.c}}">
+          <span style="background: linear-gradient(transparent 58%, {{tb.hl}} 58%, {{tb.hl}} 96%, transparent 96%); padding: 0 3px">{{tb.label}}</span>
+        </a>
+      </sc-for>
+    </nav>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#E8C93A","options":["#E8C93A","#6FD08C","#E884B8","#5AAFE8"]},"hlTask":{"editor":"color","default":"#A894FF80","options":["#A894FF80","#E3B25C70","#F2907A70","#7AA2FF70"]},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const accent = this.props.accent ?? '#E8C93A';
+    const ws = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    const days = [25,26,27,28,29,30,31].map((n, i) => ({ n: n, w: ws[i], cur: n === 28 ? 'date' : 'false', bg: n === 28 ? '#E9EEF8' : '#18223A', fg: n === 28 ? '#101727' : '#E9EEF8' }));
+    const T = this.props.hlTask ?? '#A894FF80';
+    const B = 'rgba(94,214,190,0.46)', P = 'rgba(232,132,184,0.48)';
+    const rows = [
+      { t: '14:00', title: 'Cálculo I', sub: 'aula · sala B-204 · 1 nota', hl: B, check: false },
+      { t: '16:30', title: 'Ler capítulo 4 · Algoritmos', sub: 'tarefa · 45 min · prazo amanhã', hl: T, check: true },
+      { t: '19:00', title: 'Grupo de estudos', sub: 'compromisso · online · aviso 10 min', hl: P, check: false },
+      { t: '20:15', title: 'Relatório de Física', sub: 'tarefa · 45 min · prazo 07/11', hl: T, check: true }
+    ];
+    const tabs = ['Hoje','Semana','Mês','Matérias'].map((l, i) => ({ label: l, w: i === 0 ? 900 : 500, c: i === 0 ? '#E9EEF8' : '#A7B2C9', hl: i === 0 ? T : 'transparent' }));
+    return { accent: accent, hlTask: T, days: days, rows: rows, tabs: tabs };
+  }
+}
+</script>
+</body>
+</html>
