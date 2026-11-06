@@ -146,8 +146,11 @@ Como usuário, quero uma interface consistente e legível no claro e no escuro.
 - Tema claro e escuro seguindo o sistema.
 - Componentes: `Button`, `IconButton`, `Chip`, `Card` (com sombra dura), `Checkbox` quadrada, `Highlight` (marca-texto), `TimeRing` (anel de tempo), `Sheet` (folha inferior), `Toast` com ação "Desfazer", `EmptyState`, fundo quadriculado.
 - Contraste mínimo AA nos textos (teste que calcula contraste dos pares de tokens).
+- *(acrescentado em 2026-11-06, visto no celular)* A barra de status segue o tema **do app**: ícones
+  escuros sobre fundo claro e claros sobre fundo escuro (hoje `StatusBar style="auto"` segue o sistema e
+  os ícones somem no modo escuro).
 
-**Testes:** componente de cada peça (renderiza, acessibilidade: `accessibilityRole`/`label`), teste de contraste.
+**Testes:** componente de cada peça (renderiza, acessibilidade: `accessibilityRole`/`label`), teste de contraste, estilo da barra de status em cada tema.
 
 ---
 
