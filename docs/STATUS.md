@@ -24,17 +24,17 @@ _(vazio)_
 
 ## Revisão
 
-- [ ] P0-S0-01 · Criar o projeto Expo com TypeScript strict — pronta na branch `feat/P0-S0-01-expo-project`; junta na `main` quando `npm run check` passar na pasta definitiva (ver BUG-001)
+_(vazio)_
 
 ## Feito
 
-_(vazio)_
+- [x] P0-S0-01 · Criar o projeto Expo com TypeScript strict (2026-11-05)
 
 ## Bugs
 
 _(formato: `BUG-001 · descrição · código de erro · história relacionada · status`)_
 
-- BUG-001 · Jest (jest-expo) quebra quando o caminho da pasta tem parênteses, ex. `Nova pasta (9)`: o mock automático lê o caminho pelo rastro de pilha · ambiente · P0-S0-01 · aberto (solução: mover o projeto para um caminho sem parênteses)
+- BUG-001 · Jest (jest-expo) quebra quando o caminho da pasta tem parênteses, ex. `Nova pasta (9)`: o mock automático lê o caminho pelo rastro de pilha · ambiente · P0-S0-01 · **resolvido** em 2026-11-05 (causa: parênteses no caminho da pasta; projeto copiado para `C:\Users\ggabr\Projetos\prumo-app`, onde `npm ci` e `npm run check` passaram)
 
 ## Ideias (não entram na sprint sem passar pelo planejamento)
 
@@ -54,9 +54,11 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 - Pendência · **E2E pendente de rodar**: fluxos `.yaml` são escritos normalmente; antes de fechar a Sprint 0, guiar a instalação do Java 17, do Android Studio (emulador) e do Maestro.
 - Pendência · Avisar antes da primeira história que não roda no Expo Go (provavelmente P1-S1-05, SQLCipher) e explicar o development build.
 - Pendência · P0-S0-03: guiar a criação do repositório vazio no GitHub e a proteção da branch.
+- Pendência · `npm audit` aponta 31 vulnerabilidades (1 baixa, 30 moderadas), todas na cadeia de testes do Jest (só desenvolvimento, não vão para o app). Não usar `audit fix --force` (quebraria o Jest 30); reavaliar na P0-S0-03, quando a análise de dependências entrar na CI.
+- Pendência · Apagar a pasta antiga `Downloads\Nova pasta (9)\prumo-app` depois de fechar a sessão do Claude Code que a usava.
 
 ## Métricas por sprint
 
 | Sprint | Histórias feitas | Bugs abertos/fechados | Erros na Central (novos) | Cobertura core | `plan()` (ms) |
 |---|---|---|---|---|---|
-| S0 | | | | | |
+| S0 | 1 | 1 / 1 | — | — | — |
