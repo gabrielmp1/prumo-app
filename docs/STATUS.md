@@ -8,7 +8,6 @@
 
 ## A fazer (em ordem)
 
-- [ ] P0-S0-02 · Qualidade automática: lint, formatação, testes, cobertura
 - [ ] P0-S0-03 · Integração contínua no GitHub
 - [ ] P0-S0-04 · Núcleo da Central de Erros
 - [ ] P0-S0-05 · Testes falham em erro inesperado
@@ -29,6 +28,7 @@ _(vazio)_
 ## Feito
 
 - [x] P0-S0-01 · Criar o projeto Expo com TypeScript strict (2026-11-05; conferida no Samsung pelo Expo Go, SDK 58, via túnel)
+- [x] P0-S0-02 · Qualidade automática: lint, formatação, testes, cobertura (2026-11-05)
 
 ## Bugs
 
@@ -55,6 +55,12 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 - 2026-11-05 · ESLint mínimo (`eslint-config-expo`) já instalado na P0-S0-01 para o `npm run check` funcionar desde o início; as regras do projeto entram na P0-S0-02.
 - 2026-11-05 · `react-dom` 19.3.0 instalado só para fechar a dependência do Expo Router (web) com a mesma versão do `react`; sem ele o npm não resolve as dependências.
 - 2026-11-05 · Padrões combinados: 9 ADRs (001 a 009) na P0-S0-10; branches locais por história até a CI existir (P0-S0-03); `.gitattributes` com quebra de linha LF; pacotes só locais e justificados no commit.
+- 2026-11-05 · P0-S0-02 · ESLint = base da Expo (React, hooks, imports, React Native) + recomendadas do `typescript-eslint` + Prettier (`eslint-plugin-prettier`). Regras do DoD viram erro: `any`, `@ts-ignore`, `console`. Prettier: aspas simples, 100 colunas, LF. `npm run format` corrige o que der automaticamente.
+- 2026-11-05 · P0-S0-02 · Regra de arquitetura em dois lugares: ESLint (`no-restricted-imports` em `src/core`) e `test/architecture.test.ts`, que resolve os caminhos de verdade. Além do que a história pede, o core também fica sem `ui`/`app` e sem `Date.now()`/`new Date()` (o "agora" é parâmetro, doc 02).
+- 2026-11-05 · P0-S0-02 · `@types/node` entrou por causa das ferramentas de teste; para o app não usar Node por engano, módulos do Node (`fs`, `path`, `node:*`…) são barrados pelo ESLint em `app/` e `src/` (fora dos testes).
+- 2026-11-05 · P0-S0-02 · Os testes que conferem regras do ESLint rodam o ESLint num processo separado (`test/tools/lint-snippets.cjs`): o ESLint carrega a configuração com `import()` dinâmico, que o Jest não suporta.
+- 2026-11-05 · P0-S0-02 · Exemplo do core: `src/core/time.ts` (`toMinutes`/`fromMinutes`, "HH:MM" ↔ minutos, com teste de propriedade). Será usado pelo encaixe do dia (`schedule`).
+- 2026-11-05 · P0-S0-02 · Cobertura medida em `src/**` e `app/**`; limite de 90% (linhas e ramos) só em `src/core`. Conferido que cai abaixo do limite → `npm run test:coverage` falha.
 - Pendência · **E2E pendente de rodar**: fluxos `.yaml` são escritos normalmente; antes de fechar a Sprint 0, guiar a instalação do Java 17, do Android Studio (emulador) e do Maestro.
 - Pendência · Avisar antes da primeira história que não roda no Expo Go (provavelmente P1-S1-05, SQLCipher) e explicar o development build.
 - Pendência · P0-S0-03: guiar a criação do repositório vazio no GitHub e a proteção da branch.
@@ -65,4 +71,4 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 
 | Sprint | Histórias feitas | Bugs abertos/fechados | Erros na Central (novos) | Cobertura core | `plan()` (ms) |
 |---|---|---|---|---|---|
-| S0 | 1 | 1 / 1 | — | — | — |
+| S0 | 2 | 1 / 1 | — | 100% | — |

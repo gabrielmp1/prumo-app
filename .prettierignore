@@ -1,0 +1,6 @@
+# Documentação e referências de design não são formatadas automaticamente.
+docs/
+coverage/
+dist/
+.expo/
+package-lock.json
