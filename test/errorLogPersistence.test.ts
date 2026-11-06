@@ -86,7 +86,10 @@ describe('P0-S0-06 · persistência da Central de Erros', () => {
     const quebrado: ErrorLogStore = {
       record: () => Promise.reject(new Error('disco cheio')),
       list: () => Promise.resolve([]),
+      remove: () => Promise.resolve(),
       clear: () => Promise.resolve(),
+      getLastSeen: () => Promise.resolve(null),
+      setLastSeen: () => Promise.resolve(),
     };
     const transporte = new DevCenterTransport();
     transporte.attachStore(quebrado);

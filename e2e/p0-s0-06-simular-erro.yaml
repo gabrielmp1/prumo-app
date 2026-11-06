@@ -1,7 +1,7 @@
-# P0-S0-06 · "Simular erro" (só dev) → tela de erro → "Tentar de novo".
+# P0-S0-06 + P0-S0-07 · "Simular erro" (só dev) → tela de erro → "Tentar de novo" →
+# selo de erros novos → Central mostra o UI-001 → copiar relatório.
 # E2E PENDENTE DE RODAR: precisa do Maestro + emulador (ver STATUS).
-# Roda no Expo Go com o servidor do Expo ligado (npx expo start). A P0-S0-07 acrescenta
-# a abertura da Central de Erros e a conferência do UI-001 na lista.
+# Roda no Expo Go com o servidor do Expo ligado (npx expo start).
 appId: host.exp.exponent
 ---
 - launchApp:
@@ -15,3 +15,15 @@ appId: host.exp.exponent
 - assertVisible: 'Algo deu errado nesta tela.'
 - tapOn: 'Tentar de novo'
 - assertVisible: 'Prumo'
+# P0-S0-07: o selo vermelho aparece e abre a Central com o erro.
+- tapOn:
+    id: 'selo-erros'
+- assertVisible: 'Central de Erros'
+- assertVisible: 'UI-001'
+- tapOn: 'Copiar tudo'
+- assertVisible: 'Relatório copiado'
+- tapOn:
+    text: 'UI-001.*'
+- assertVisible: 'UI-001 · ui'
+- tapOn: 'Marcar como resolvido'
+- assertVisible: 'Nenhum erro registrado'

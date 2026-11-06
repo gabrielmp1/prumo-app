@@ -3,26 +3,35 @@ import path from 'node:path';
 
 import { CODES, isErrorCode, moduleOf, type ErrorCode } from './codes';
 
-// P0-S0-04 · catálogo de códigos (doc 04): fonte única, igual à tabela de códigos iniciais.
-function tabelaDoDoc04(): Map<string, string> {
-  const doc = fs.readFileSync(path.resolve(__dirname, '../../docs/04-central-de-erros.md'), 'utf8');
-  const inicio = doc.indexOf('Códigos iniciais');
-  const fim = doc.indexOf('Códigos previstos');
-  const linhas = doc.slice(inicio, fim).split('\n');
+// P0-S0-04 · catálogo de códigos (doc 04): fonte única, sempre igual ao que o doc 04 diz.
+const DOC = fs.readFileSync(path.resolve(__dirname, '../../docs/04-central-de-erros.md'), 'utf8');
+
+/** Linhas de tabela com um único código: `| \`XXX-000\` | severidade | ... |`. */
+function codigosNoTrecho(inicio: string, fim?: string): Map<string, string> {
+  const de = DOC.indexOf(inicio);
+  const ate = fim ? DOC.indexOf(fim) : DOC.length;
   const tabela = new Map<string, string>();
-  for (const linha of linhas) {
-    const m = /^\|\s*`([A-Z]+-\d{3})`\s*\|\s*(\w+)\s*\|/.exec(linha);
+  for (const linha of DOC.slice(de, ate).split('\n')) {
+    const m = /^\|\s*`([A-Z]+-\d{3})`\s*\|\s*([\w.]+)\s*\|/.exec(linha);
     if (m?.[1] && m[2]) tabela.set(m[1], m[2]);
   }
   return tabela;
 }
 
 describe('P0-S0-04 · catálogo de códigos', () => {
-  it('tem exatamente os códigos iniciais do doc 04, com a mesma severidade', () => {
-    const doc = tabelaDoDoc04();
-    expect(doc.size).toBeGreaterThanOrEqual(14);
-    const catalogo = new Map(Object.entries(CODES).map(([c, info]) => [c, info.severity]));
-    expect(catalogo).toEqual(doc);
+  it('tem todos os códigos iniciais do doc 04, com a mesma severidade', () => {
+    const iniciais = codigosNoTrecho('Códigos iniciais', 'Códigos previstos');
+    expect(iniciais.size).toBe(14);
+    for (const [codigo, severidade] of iniciais) {
+      expect([codigo, CODES[codigo as ErrorCode]?.severity]).toEqual([codigo, severidade]);
+    }
+  });
+
+  it('todo código do catálogo está documentado no doc 04 com a mesma severidade', () => {
+    const documentados = codigosNoTrecho('Códigos iniciais');
+    for (const [codigo, info] of Object.entries(CODES)) {
+      expect([codigo, documentados.get(codigo)]).toEqual([codigo, info.severity]);
+    }
   });
 
   it('cada código tem descrição, módulo e a história que o criou', () => {

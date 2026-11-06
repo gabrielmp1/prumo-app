@@ -1,0 +1,16 @@
+# P0-S0-07 · acesso escondido à Central: Ajustes → 5 toques na versão.
+# E2E PENDENTE DE RODAR: precisa do Maestro + emulador (ver STATUS).
+appId: host.exp.exponent
+---
+- launchApp:
+    clearState: true
+- openLink: exp://127.0.0.1:8081
+- extendedWaitUntil:
+    visible: 'Prumo'
+    timeout: 60000
+- tapOn: 'Ajustes'
+- assertVisible: 'Ajustes'
+- tapOn:
+    text: 'Versão.*'
+    repeat: 5
+- assertVisible: 'Central de Erros'

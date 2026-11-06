@@ -111,6 +111,32 @@ Acesso: Ajustes → tocar 5 vezes na versão, ou atalho no topo quando houver er
 - **Marcar como resolvido** / **Limpar tudo**.
 - **Gerar dados de exemplo** e **Simular erro** (para testar a própria central).
 
+Como foi implementado (P0-S0-07):
+- Rotas: `app/ajustes.tsx` (provisória: título e versão) e `app/dev/erros.tsx`. A rota da Central fica
+  dentro de `Stack.Protected` (`src/features/navigation/AppStack.tsx`): fora do modo dev, abrir
+  `/dev/erros` leva para o início. O selo (`ErrorBadge`) e o "Simular erro" também só aparecem em dev.
+- Acesso: 5 toques seguidos na versão (intervalo de até 3 s entre toques) ou o selo vermelho, que conta
+  os grupos com ocorrência depois da última abertura da Central.
+- "Só novos" compara com a abertura **anterior**; abrir a tela grava a hora atual como última abertura
+  (tabela `dev_error_meta`), o que zera o selo.
+- "Marcar como resolvido" apaga o grupo; se o erro voltar, aparece de novo, contando do 1.
+- "Simular erro" na Central quebra a própria tela de propósito (mostra o `ErrorBoundary` e registra `UI-001`).
+- "Rodar autodiagnóstico" aparece desativado até a P0-S0-08. "Gerar dados de exemplo" chega com o
+  banco principal (Sprint 1).
+- Falha ao copiar o relatório: aviso na tela e `UI-002`.
+
+Formato real do relatório (um grupo; "Copiar tudo" junta todos sob um título com a quantidade):
+```
+## Erro PLN-003 (x4) — planner
+Severidade: warning · Primeira vez: <ISO> · Última vez: <ISO>
+Mensagem: ...
+Contexto: {...}                      (ou "(nenhum)")
+Tela: /dia                           (ou "(desconhecida)")
+Trilha: nav:/dia → ui:toque bloco    (10 últimas ações; "(+N anteriores)" quando há mais)
+Pilha:                               (até 15 linhas, num bloco de código; ou "Pilha: (nenhuma)")
+Versão: 0.3.0 (sprint 3) · android 34
+```
+
 ## Autodiagnóstico (`selfTest.ts`)
 
 Roda na abertura do app (em segundo plano, modo dev) e sob demanda. Cada verificação é uma
@@ -178,6 +204,7 @@ Códigos previstos pelas histórias (cada história os cria quando for implement
 
 | Código | Sev. | Descrição | História |
 |---|---|---|---|
+| `UI-002` | error | Falha numa ação da tela da Central de Erros (ex.: copiar relatório) | P0-S0-07 |
 | `APP-003` | error | Uma verificação do autodiagnóstico lançou exceção | P0-S0-08 |
 | `APP-101` | autodiag. | Versão do banco diferente da esperada | P0-S0-08 |
 | `DAT-101` | autodiag. | Itens em quarentena (inválidos) | P1-S1-02 |

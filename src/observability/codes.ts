@@ -23,6 +23,11 @@ export const CODES = {
     story: 'P0-S0-04',
     userMessage: 'Algo deu errado nesta tela.',
   },
+  'UI-002': {
+    severity: 'error',
+    description: 'Falha numa ação da tela da Central de Erros (ex.: copiar relatório)',
+    story: 'P0-S0-07',
+  },
   'DAT-001': {
     severity: 'fatal',
     description: 'Falha ao abrir banco ou rodar migração',

@@ -1,10 +1,20 @@
+import Constants from 'expo-constants';
 import { usePathname } from 'expo-router';
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 
 import { breadcrumb, errorCenter } from '../../observability';
 import { startErrorCenter } from './startErrorCenter';
 
 let started = false;
+
+/** Versão do app (app.json) e plataforma, para os relatórios: ex. "0.0.1" e "android 34". */
+export function appInfo(): { appVersion: string; platform: string } {
+  return {
+    appVersion: Constants.expoConfig?.version ?? 'desconhecida',
+    platform: `${Platform.OS} ${String(Platform.Version)}`,
+  };
+}
 
 /**
  * Usado uma vez no layout raiz: liga a Central de Erros na abertura do app e registra a tela
@@ -16,6 +26,7 @@ export function useErrorCenter(): void {
   useEffect(() => {
     if (started) return;
     started = true;
+    errorCenter.setAppInfo(appInfo());
     void startErrorCenter();
   }, []);
 
