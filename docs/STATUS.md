@@ -8,7 +8,6 @@
 
 ## A fazer (em ordem)
 
-- [ ] P0-S0-03 · Integração contínua no GitHub
 - [ ] P0-S0-04 · Núcleo da Central de Erros
 - [ ] P0-S0-05 · Testes falham em erro inesperado
 - [ ] P0-S0-06 · Capturas globais e persistência
@@ -19,7 +18,7 @@
 
 ## Fazendo
 
-_(vazio)_
+- [ ] P0-S0-03 · Integração contínua no GitHub
 
 ## Revisão
 

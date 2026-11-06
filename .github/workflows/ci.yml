@@ -1,0 +1,51 @@
+# CI do Prumo (doc 03): roda em todo push e pull request.
+# A proteção da branch main exige este job ("ci") verde para juntar (ver README).
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Verificar tipos
+        run: npm run typecheck
+
+      - name: Lint e formatação
+        run: npm run lint
+
+      - name: Testes com cobertura (inclui teste de arquitetura)
+        run: npm run test:coverage
+
+      - name: Vulnerabilidades nas dependências do app
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Publicar relatório de cobertura
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage
+          path: coverage/
+          if-no-files-found: ignore
+          retention-days: 14
