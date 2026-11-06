@@ -8,7 +8,6 @@
 
 ## A fazer (em ordem)
 
-- [ ] P0-S0-06 · Capturas globais e persistência
 - [ ] P0-S0-07 · Tela da Central de Erros
 - [ ] P0-S0-08 · Esqueleto do Autodiagnóstico
 - [ ] P0-S0-09 · Tokens de design e componentes base
@@ -16,11 +15,11 @@
 
 ## Fazendo
 
-_(vazio)_
+- [ ] P0-S0-06 · Capturas globais e persistência
 
 ## Revisão
 
-- [ ] P0-S0-05 · Testes falham em erro inesperado — pronta na branch `feat/P0-S0-05-unexpected-errors-fail-tests`; junta na `main` com a CI verde
+_(vazio)_
 
 ## Feito
 
@@ -28,6 +27,7 @@ _(vazio)_
 - [x] P0-S0-02 · Qualidade automática: lint, formatação, testes, cobertura (2026-11-05)
 - [x] P0-S0-03 · Integração contínua no GitHub (2026-11-06; CI verde na branch antes de juntar; CI da `main` verde)
 - [x] P0-S0-04 · Núcleo da Central de Erros (2026-11-06; CI verde na branch)
+- [x] P0-S0-05 · Testes falham em erro inesperado (2026-11-06; CI verde na branch)
 
 ## Bugs
 
@@ -73,4 +73,4 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 
 | Sprint | Histórias feitas | Bugs abertos/fechados | Erros na Central (novos) | Cobertura core | `plan()` (ms) |
 |---|---|---|---|---|---|
-| S0 | 4 | 1 / 1 | — | 100% | — |
+| S0 | 5 | 1 / 1 | — | 100% | — |
