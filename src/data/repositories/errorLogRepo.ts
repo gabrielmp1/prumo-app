@@ -24,7 +24,13 @@ CREATE TABLE IF NOT EXISTS dev_error_log (
   last_event    TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS dev_error_log_last_at ON dev_error_log (last_at);
+CREATE TABLE IF NOT EXISTS dev_error_meta (
+  key   TEXT PRIMARY KEY NOT NULL,
+  value TEXT NOT NULL
+);
 `;
+
+const LAST_SEEN = 'last_seen_at';
 
 // A contagem é feita pelo próprio banco: assim, eventos que chegam antes de o app terminar
 // de carregar os grupos antigos não sobrescrevem a contagem.
@@ -121,8 +127,24 @@ export async function createErrorLogRepo(db: SqlDatabase): Promise<ErrorLogStore
       );
       return rows.map(toGroup);
     },
+    async remove(fingerprint) {
+      await db.runAsync('DELETE FROM dev_error_log WHERE fingerprint = ?', [fingerprint]);
+    },
     async clear() {
       await db.runAsync('DELETE FROM dev_error_log', []);
+    },
+    async getLastSeen() {
+      const row = await db.getFirstAsync<{ value: string }>(
+        'SELECT value FROM dev_error_meta WHERE key = ?',
+        [LAST_SEEN],
+      );
+      return row?.value ?? null;
+    },
+    async setLastSeen(at) {
+      await db.runAsync(
+        'INSERT INTO dev_error_meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value',
+        [LAST_SEEN, at],
+      );
     },
   };
 }

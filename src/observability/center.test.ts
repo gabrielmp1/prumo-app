@@ -86,6 +86,15 @@ describe('P0-S0-04 · cada função reporta com a severidade correta', () => {
     );
   });
 
+  it('P0-S0-07 · o evento leva a versão e a plataforma informadas na abertura do app', () => {
+    const { center, transporte } = montar();
+    center.setAppInfo({ appVersion: '0.3.0', platform: 'android 34' });
+    center.reportWarning('PLN-003', 'x');
+    expect(ultimo(transporte)).toEqual(
+      expect.objectContaining({ appVersion: '0.3.0', platform: 'android 34' }),
+    );
+  });
+
   it('o evento leva a tela atual', () => {
     const { center, transporte } = montar();
     center.setScreen('/dia');

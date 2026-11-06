@@ -28,6 +28,7 @@ export interface ErrorEvent {
   breadcrumbs: Breadcrumb[]; // últimas 50 ações
   screen?: string;
   appVersion: string;
+  platform?: string; // ex.: "android 34"
   occurredAt: string; // ISO
   fingerprint: string; // código + mensagem normalizada → agrupa repetidos
 }
@@ -56,7 +57,12 @@ export interface ErrorLogStore {
   record(event: ErrorEvent): Promise<void>;
   /** Grupos do mais recente para o mais antigo. */
   list(): Promise<ErrorGroup[]>;
+  /** "Marcar como resolvido": apaga o grupo; se o erro voltar, recomeça do 1. */
+  remove(fingerprint: string): Promise<void>;
   clear(): Promise<void>;
+  /** Quando a tela da Central foi aberta pela última vez (ISO), para "só novos" e o selo. */
+  getLastSeen(): Promise<string | null>;
+  setLastSeen(at: string): Promise<void>;
 }
 
 /** Ordem de gravidade, da menor para a maior. */

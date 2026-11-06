@@ -53,6 +53,8 @@ export interface ErrorCenter {
   /** Mede o tempo de `fn`; acima do orçamento reporta PRF-001. Aceita função síncrona ou assíncrona. */
   measure<R>(name: string, fn: () => R, budgetMs: number): R;
   setScreen(screen: string | undefined): void;
+  /** Versão do app e plataforma (ex.: "android 34"), lidas na abertura do app. */
+  setAppInfo(info: { appVersion?: string; platform?: string }): void;
 }
 
 function defaultNewId(): string {
@@ -89,13 +91,14 @@ export function createErrorCenter(options: ErrorCenterOptions): ErrorCenter {
   const {
     mode,
     transports,
-    appVersion = 'dev',
     now = () => new Date(),
     monotonic = defaultMonotonic,
     newId = defaultNewId,
   } = options;
   const trail = new RingBuffer<Breadcrumb>(BREADCRUMB_LIMIT);
   let screen: string | undefined;
+  let appVersion = options.appVersion ?? 'dev';
+  let platform: string | undefined;
 
   function emit(
     code: ErrorCode,
@@ -115,6 +118,7 @@ export function createErrorCenter(options: ErrorCenterOptions): ErrorCenter {
       breadcrumbs: trail.toArray(),
       ...(screen !== undefined && { screen }),
       appVersion,
+      ...(platform !== undefined && { platform }),
       occurredAt: now().toISOString(),
       fingerprint: fingerprintOf(code, message),
     };
@@ -202,6 +206,11 @@ export function createErrorCenter(options: ErrorCenterOptions): ErrorCenter {
 
     setScreen(next) {
       screen = next;
+    },
+
+    setAppInfo(info) {
+      if (info.appVersion !== undefined) appVersion = info.appVersion;
+      if (info.platform !== undefined) platform = info.platform;
     },
   };
   return center;

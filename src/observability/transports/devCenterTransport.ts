@@ -25,6 +25,9 @@ export class DevCenterTransport implements ErrorTransport {
   private store: ErrorLogStore | undefined;
   private pending: ErrorEvent[] = [];
   private queue: Promise<void> = Promise.resolve();
+  private lastSeen: string | null = null;
+  private readonly listeners = new Set<() => void>();
+  private changes = 0;
 
   constructor(private readonly maxGroups = DEFAULT_MAX_GROUPS) {}
 
@@ -37,6 +40,20 @@ export class DevCenterTransport implements ErrorTransport {
       // Banco ainda não abriu (início do app): guarda para gravar quando abrir.
       this.pending.push(event);
     }
+    this.notify();
+  }
+
+  /** Avisa a tela a cada mudança. Devolve a função que cancela o aviso. */
+  subscribe(listener: () => void): () => void {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
+
+  /** Muda a cada alteração: a tela usa para saber quando redesenhar. */
+  version(): number {
+    return this.changes;
   }
 
   /** Liga o banco. Eventos que chegaram antes são gravados agora, na ordem. */
@@ -63,6 +80,8 @@ export class DevCenterTransport implements ErrorTransport {
     for (const group of groups.slice(0, this.maxGroups)) {
       this.byFingerprint.set(group.fingerprint, group);
     }
+    this.lastSeen = await store.getLastSeen();
+    this.notify();
   }
 
   /** Espera as gravações pendentes terminarem. */
@@ -80,7 +99,42 @@ export class DevCenterTransport implements ErrorTransport {
     this.pending = [];
     const store = this.store;
     if (store) this.enqueue(() => store.clear());
+    this.notify();
     await this.flush();
+  }
+
+  /** "Marcar como resolvido": some da lista; se o erro voltar, aparece de novo como novo. */
+  async resolve(fingerprint: string): Promise<void> {
+    this.byFingerprint.delete(fingerprint);
+    this.pending = this.pending.filter((e) => e.fingerprint !== fingerprint);
+    const store = this.store;
+    if (store) this.enqueue(() => store.remove(fingerprint));
+    this.notify();
+    await this.flush();
+  }
+
+  /** Registra que a Central foi aberta agora: o que veio antes deixa de ser "novo". */
+  async markSeen(at: string): Promise<void> {
+    this.lastSeen = at;
+    const store = this.store;
+    if (store) this.enqueue(() => store.setLastSeen(at));
+    this.notify();
+    await this.flush();
+  }
+
+  lastSeenAt(): string | null {
+    return this.lastSeen;
+  }
+
+  /** Grupos com ocorrência depois da última abertura da Central (todos, se nunca abriu). */
+  newGroups(): ErrorGroup[] {
+    const since = this.lastSeen;
+    return this.groups().filter((g) => since === null || g.lastAt > since);
+  }
+
+  private notify(): void {
+    this.changes += 1;
+    for (const listener of this.listeners) listener();
   }
 
   private enqueued = 0;

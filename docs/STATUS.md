@@ -8,7 +8,6 @@
 
 ## A fazer (em ordem)
 
-- [ ] P0-S0-07 · Tela da Central de Erros
 - [ ] P0-S0-08 · Esqueleto do Autodiagnóstico
 - [ ] P0-S0-09 · Tokens de design e componentes base
 - [ ] P0-S0-10 · ADRs e STATUS (incluir ADR-007 a ADR-009 de segurança)
@@ -19,7 +18,7 @@ _(vazio)_
 
 ## Revisão
 
-_(vazio)_
+- [ ] P0-S0-07 · Tela da Central de Erros — pronta na branch `feat/P0-S0-07-error-center-screen`; junta na `main` com a CI verde. **E2E pendente de rodar** (`e2e/p0-s0-06-simular-erro.yaml`, `e2e/p0-s0-07-acesso-ajustes.yaml`)
 
 ## Feito
 
@@ -67,6 +66,9 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 - 2026-11-06 · P0-S0-06 · Testes de integração usam o SQLite que vem no Node 24 (`node:sqlite`, em `test/tools/nodeSqlite.ts`) com a mesma interface do `expo-sqlite` (`src/data/sql.ts`): o mesmo SQL roda no teste e no celular, sem dependência nova.
 - 2026-11-06 · P0-S0-06 · Toda tela nova em `app/` deve ter `export { ErrorBoundary } from '../src/features/errorCenter'`. O botão "Simular erro" (discreto, no rodapé da tela inicial) só aparece em modo dev.
 - 2026-11-06 · P0-S0-06 · No React Native Testing Library 14, `fireEvent` é assíncrono: sempre `await fireEvent.press(...)` (sem o `await`, um teste contamina o seguinte).
+- 2026-11-06 · P0-S0-07 · Central de Erros: rota `/dev/erros` protegida por `Stack.Protected` (só dev), selo vermelho de erros novos na tela inicial, Ajustes provisório com 5 toques na versão. Novo código `UI-002` (falha numa ação da Central, ex. copiar). Dependência nova: `expo-clipboard`. "Rodar autodiagnóstico" fica desativado até a P0-S0-08; "Gerar dados de exemplo" fica para o banco principal (Sprint 1).
+- 2026-11-06 · P0-S0-07 · Testes rodam com fuso fixo `America/Sao_Paulo` (`test/globalSetup.js`): horários na tela não dependem do computador nem da CI.
+- 2026-11-06 · P0-S0-07 · Os tipos das rotas (`typedRoutes`) são gerados em `.expo/types` quando o `expo start` roda. Ao criar uma rota nova, rode o Expo uma vez antes do `npm run check`, senão o `tsc` local reclama da rota nova (na CI essa pasta não existe e não há problema).
 - Pendência · **E2E pendente de rodar**: fluxos `.yaml` são escritos normalmente; antes de fechar a Sprint 0, guiar a instalação do Java 17, do Android Studio (emulador) e do Maestro.
 - Pendência · Avisar antes da primeira história que não roda no Expo Go (provavelmente P1-S1-05, SQLCipher) e explicar o development build.
 - 2026-11-06 · P0-S0-03 · Repositório **privado** em `github.com/gabrielmp1/prumo-app`. No plano grátis, as regras de proteção de branch não são aplicadas em repositório privado: vale o combinado de só juntar na `main` com a CI verde. O passo a passo do README fica para quando o repositório virar público ou o plano mudar.

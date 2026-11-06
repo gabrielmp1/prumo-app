@@ -129,3 +129,29 @@ describe('P0-S0-06 · errorLogRepo (dev_error_log)', () => {
     );
   });
 });
+
+// P0-S0-07 · "Marcar como resolvido" e "só novos desde a última abertura".
+describe('P0-S0-07 · errorLogRepo: resolvido e última abertura', () => {
+  it('remover um grupo apaga só ele; se o erro voltar, o grupo recomeça do 1', async () => {
+    const repo = await createErrorLogRepo(openMemoryDatabase());
+    await repo.record(evento({ fingerprint: 'A' }));
+    await repo.record(evento({ fingerprint: 'A' }));
+    await repo.record(evento({ fingerprint: 'B' }));
+
+    await repo.remove('A');
+    expect((await repo.list()).map((g) => g.fingerprint)).toEqual(['B']);
+
+    await repo.record(evento({ fingerprint: 'A' }));
+    expect((await repo.list()).find((g) => g.fingerprint === 'A')?.count).toBe(1);
+  });
+
+  it('guarda quando a Central foi aberta pela última vez (vazio no começo)', async () => {
+    const db = openMemoryDatabase();
+    const repo = await createErrorLogRepo(db);
+    expect(await repo.getLastSeen()).toBeNull();
+
+    await repo.setLastSeen('2026-11-06T10:00:00.000Z');
+    await repo.setLastSeen('2026-11-06T12:00:00.000Z');
+    expect(await (await createErrorLogRepo(db)).getLastSeen()).toBe('2026-11-06T12:00:00.000Z');
+  });
+});
