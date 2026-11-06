@@ -72,6 +72,25 @@ desconhecido cai nesse padrão. Até a P3-S13-03, o modo `prod` não tem transpo
 - Falhas de validação zod em leitura/escrita → `DAT-002` (com o caminho do campo, sem o valor).
 - Orçamento de desempenho estourado → `PRF-001`.
 
+Como foi implementado (P0-S0-06):
+- **ErrorBoundary por tela:** cada arquivo de rota em `app/` faz `export { ErrorBoundary } from
+  '../src/features/errorCenter'` (recurso do Expo Router). Toda tela nova deve repetir essa linha.
+  O layout raiz também exporta, para erros no próprio layout.
+- **Exceções não tratadas:** o handler do `ErrorUtils` reporta `APP-001` (`fatal` quando o React
+  Native diz que é fatal, senão `error`) e depois chama o handler original (tela vermelha em dev).
+- **Promessas rejeitadas:** no React Native 0.88 elas não passam pelo `ErrorUtils`; o app religa o
+  rastreador do Hermes (`HermesInternal.enablePromiseRejectionTracker`), reporta `APP-002` com
+  `{ promiseId }` e mantém o aviso padrão do React Native.
+- **Persistência:** banco próprio `prumo-dev-errors.db` (separado do banco principal, para conseguir
+  guardar até um `DAT-001` do banco principal), tabela `dev_error_log` com um registro por grupo.
+  O banco faz a contagem (`count = count + 1`), guarda a severidade mais grave e o último evento
+  (JSON), e mantém no máximo 500 grupos (os mais antigos saem). Erros reportados antes de o banco
+  abrir ficam numa fila e são gravados quando ele abre. Falha ao gravar não é reportada (seria um
+  laço): fica contada no transporte (`persistFailures`) para a tela da Central mostrar.
+- **Abertura do app:** `useErrorCenter()` no layout raiz instala as capturas, abre o banco (só em
+  dev), carrega os erros anteriores e registra a tela atual e a trilha `nav` a cada rota.
+  Se o banco não abrir: `DAT-001` e a Central segue só em memória.
+
 ## Tela "Central de Erros" (só em dev)
 
 Acesso: Ajustes → tocar 5 vezes na versão, ou atalho no topo quando houver erros (selo vermelho com a contagem).

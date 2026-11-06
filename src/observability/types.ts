@@ -38,6 +38,27 @@ export interface ErrorTransport {
   send(event: ErrorEvent): void;
 }
 
+/** Repetições do mesmo erro (mesma impressão digital), como a Central mostra. */
+export interface ErrorGroup {
+  fingerprint: string;
+  code: ErrorCode;
+  module: string;
+  severity: Severity; // a mais grave já vista no grupo
+  count: number;
+  firstAt: string;
+  lastAt: string;
+  lastEvent: ErrorEvent;
+}
+
+/** Onde a Central guarda os grupos para sobreviverem ao fechar o app (SQLite `dev_error_log`). */
+export interface ErrorLogStore {
+  /** Soma o evento ao grupo da sua impressão digital (ou cria o grupo). */
+  record(event: ErrorEvent): Promise<void>;
+  /** Grupos do mais recente para o mais antigo. */
+  list(): Promise<ErrorGroup[]>;
+  clear(): Promise<void>;
+}
+
 /** Ordem de gravidade, da menor para a maior. */
 export const SEVERITY_RANK: Record<Severity, number> = {
   debug: 0,
