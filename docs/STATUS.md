@@ -8,7 +8,6 @@
 
 ## A fazer (em ordem)
 
-- [ ] P0-S0-03 · Integração contínua no GitHub
 - [ ] P0-S0-04 · Núcleo da Central de Erros
 - [ ] P0-S0-05 · Testes falham em erro inesperado
 - [ ] P0-S0-06 · Capturas globais e persistência
@@ -29,6 +28,7 @@ _(vazio)_
 
 - [x] P0-S0-01 · Criar o projeto Expo com TypeScript strict (2026-11-05; conferida no Samsung pelo Expo Go, SDK 58, via túnel)
 - [x] P0-S0-02 · Qualidade automática: lint, formatação, testes, cobertura (2026-11-05)
+- [x] P0-S0-03 · Integração contínua no GitHub (2026-11-06; CI verde na branch antes de juntar)
 
 ## Bugs
 
@@ -63,12 +63,13 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 - 2026-11-05 · P0-S0-02 · Cobertura medida em `src/**` e `app/**`; limite de 90% (linhas e ramos) só em `src/core`. Conferido que cai abaixo do limite → `npm run test:coverage` falha.
 - Pendência · **E2E pendente de rodar**: fluxos `.yaml` são escritos normalmente; antes de fechar a Sprint 0, guiar a instalação do Java 17, do Android Studio (emulador) e do Maestro.
 - Pendência · Avisar antes da primeira história que não roda no Expo Go (provavelmente P1-S1-05, SQLCipher) e explicar o development build.
-- Pendência · P0-S0-03: guiar a criação do repositório vazio no GitHub e a proteção da branch.
-- Pendência · `npm audit` aponta 31 vulnerabilidades (1 baixa, 30 moderadas), todas na cadeia de testes do Jest (só desenvolvimento, não vão para o app). Não usar `audit fix --force` (quebraria o Jest 30); reavaliar na P0-S0-03, quando a análise de dependências entrar na CI.
+- 2026-11-06 · P0-S0-03 · Repositório **privado** em `github.com/gabrielmp1/prumo-app`. No plano grátis, as regras de proteção de branch não são aplicadas em repositório privado: vale o combinado de só juntar na `main` com a CI verde. O passo a passo do README fica para quando o repositório virar público ou o plano mudar.
+- 2026-11-06 · P0-S0-03 · Fluxo a partir de agora: a branch da história é enviada ao GitHub e só é juntada na `main` depois da CI verde. Enquanto o Claude Code não enxerga as Actions (repositório privado, sem `gh` e sem login no navegador do app), o resultado da CI é conferido pelo usuário.
+- 2026-11-06 · P0-S0-03 · `npm audit` na CI olha só as dependências do app (`--omit=dev`) e falha a partir de "alta". Situação em 2026-11-06: 22 alertas baixos/moderados nas dependências do app (`deepmerge`, `glob`, `minimatch`, usados pelas ferramentas do Expo) e mais alguns só nas ferramentas de teste; nenhum alto. Não usar `audit fix --force` (quebraria o Expo/Jest); reavaliar a cada `/fechar-sprint`.
 - Pendência · Apagar a pasta antiga `Downloads\Nova pasta (9)\prumo-app` depois de fechar a sessão do Claude Code que a usava.
 
 ## Métricas por sprint
 
 | Sprint | Histórias feitas | Bugs abertos/fechados | Erros na Central (novos) | Cobertura core | `plan()` (ms) |
 |---|---|---|---|---|---|
-| S0 | 2 | 1 / 1 | — | 100% | — |
+| S0 | 3 | 1 / 1 | — | 100% | — |

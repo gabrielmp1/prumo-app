@@ -1,8 +1,10 @@
-# Prumo — pacote inicial do projeto
+# Prumo
 
-Este pacote é o ponto de partida para construir o app Prumo com o **Claude Code**.
-Ele não tem código ainda: tem o plano completo, as regras de trabalho e o protótipo
-de referência. O Claude Code vai criar o código história por história, sempre com testes.
+[![CI](https://github.com/gabrielmp1/prumo-app/actions/workflows/ci.yml/badge.svg)](https://github.com/gabrielmp1/prumo-app/actions/workflows/ci.yml)
+
+App de organização para estudantes que planeja sozinho, construído com o **Claude Code**
+história por história, sempre com testes. Aqui estão o código, o plano completo, as regras
+de trabalho e o protótipo de referência. O andamento fica em `docs/STATUS.md`.
 
 ## O que tem aqui
 
@@ -58,6 +60,31 @@ npx expo start --tunnel ngrok
 - No SDK 58, `--tunnel` sozinho usa o túnel da própria Expo e exige login numa conta Expo
   (`npx expo login`). Com `--tunnel ngrok`, não precisa de conta.
 - O túnel é mais lento que a rede local, mas funciona em qualquer rede.
+
+## Integração contínua (CI)
+
+Todo `push` e pull request roda `.github/workflows/ci.yml` no GitHub Actions: instala com
+`npm ci`, verifica tipos, lint e formatação, roda os testes com cobertura (o limite do
+`src/core` e o teste de arquitetura fazem parte) e procura vulnerabilidades altas nas
+dependências do app. O relatório de cobertura fica disponível como artefato da execução.
+
+## Proteção da branch main
+
+A `main` só recebe código com a CI verde. Configuração no GitHub (uma vez):
+
+1. No repositório, abra **Settings → Rules → Rulesets → New ruleset → New branch ruleset**.
+2. **Ruleset name:** `main protegida`. **Enforcement status:** `Active`.
+3. **Target branches → Add target → Include default branch** (a `main`).
+4. Marque **Restrict deletions** e **Block force pushes**.
+5. Marque **Require status checks to pass**, clique em **Add checks** e escolha a
+   verificação `ci` (ela só aparece na lista depois que a CI rodou ao menos uma vez).
+6. Marque **Require branches to be up to date before merging**.
+7. Opcional: **Require a pull request before merging**, para juntar sempre por pull request.
+8. Clique em **Create**.
+
+Observação: no plano gratuito do GitHub, as regras só são aplicadas em repositórios
+**públicos**. Em repositório privado, a regra fica salva, mas o GitHub não bloqueia; nesse
+caso vale o combinado do `CLAUDE.md`: juntar na `main` só com a CI verde.
 
 ## Comandos disponíveis no Claude Code
 
