@@ -3,11 +3,13 @@
 
 type CatalogSeverity = 'warning' | 'error' | 'fatal';
 
-interface CodeInfo {
+export interface CodeInfo {
   severity: CatalogSeverity; // severidade padrão
   description: string;
   story: string; // história que criou o código
   userMessage?: string; // texto para o usuário, quando aplicável
+  /** Código de autodiagnóstico (centena 1xx): problema encontrado nos dados, mostrado como aviso. */
+  selfTest?: true;
 }
 
 export const CODES = {
@@ -16,6 +18,17 @@ export const CODES = {
     severity: 'error',
     description: 'Promessa rejeitada sem tratamento',
     story: 'P0-S0-04',
+  },
+  'APP-003': {
+    severity: 'error',
+    description: 'Uma verificação do autodiagnóstico lançou exceção',
+    story: 'P0-S0-08',
+  },
+  'APP-101': {
+    severity: 'warning',
+    selfTest: true,
+    description: 'Versão do banco da Central de Erros diferente da esperada',
+    story: 'P0-S0-08',
   },
   'UI-001': {
     severity: 'fatal',
@@ -74,6 +87,11 @@ export const CODES = {
 } as const satisfies Record<string, CodeInfo>;
 
 export type ErrorCode = keyof typeof CODES;
+
+/** Códigos que o autodiagnóstico pode usar (marcados com `selfTest` no catálogo). */
+export type SelfTestCode = {
+  [K in ErrorCode]: (typeof CODES)[K] extends { selfTest: true } ? K : never;
+}[ErrorCode];
 
 const MODULE_BY_PREFIX: Record<string, string> = {
   APP: 'app',

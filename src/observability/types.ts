@@ -65,6 +65,8 @@ export interface ErrorLogStore {
   /** Quando a tela da Central foi aberta pela última vez (ISO), para "só novos" e o selo. */
   getLastSeen(): Promise<string | null>;
   setLastSeen(at: string): Promise<void>;
+  /** Versão do esquema do banco (PRAGMA user_version), conferida pelo autodiagnóstico (APP-101). */
+  schemaVersion(): Promise<number>;
 }
 
 /** Ordem de gravidade, da menor para a maior. */

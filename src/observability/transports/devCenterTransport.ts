@@ -122,6 +122,11 @@ export class DevCenterTransport implements ErrorTransport {
     await this.flush();
   }
 
+  /** Versão do esquema do banco da Central; null se o banco não está ligado. */
+  async schemaVersion(): Promise<number | null> {
+    return this.store ? this.store.schemaVersion() : null;
+  }
+
   lastSeenAt(): string | null {
     return this.lastSeen;
   }

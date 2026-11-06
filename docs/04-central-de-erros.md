@@ -121,7 +121,7 @@ Como foi implementado (P0-S0-07):
   (tabela `dev_error_meta`), o que zera o selo.
 - "Marcar como resolvido" apaga o grupo; se o erro voltar, aparece de novo, contando do 1.
 - "Simular erro" na Central quebra a própria tela de propósito (mostra o `ErrorBoundary` e registra `UI-001`).
-- "Rodar autodiagnóstico" aparece desativado até a P0-S0-08. "Gerar dados de exemplo" chega com o
+- "Rodar autodiagnóstico" foi ligado na P0-S0-08 (ver abaixo). "Gerar dados de exemplo" chega com o
   banco principal (Sprint 1).
 - Falha ao copiar o relatório: aviso na tela e `UI-002`.
 
@@ -161,6 +161,26 @@ função pura que recebe os dados reais e devolve problemas encontrados. Exemplo
 | `PRF-101` | `plan()` levou mais que o orçamento com os dados atuais |
 
 Toda história que cria regra verificável **deve** adicionar sua verificação aqui (está no DoD).
+
+Como foi implementado (P0-S0-08):
+- `src/observability/selfTest.ts`: `createSelfTest({ center })` com `registerCheck({ code, name, run(data) => Problem[] })`.
+  O código precisa estar no catálogo marcado com `selfTest: true` (centena 1xx; o tipo `SelfTestCode` garante isso)
+  e não pode repetir. `run(data)` devolve, para cada verificação, `ok` / `problems` / `failed`, os problemas e o tempo em ms.
+- **Dados:** `SelfTestData` junta os dados reais lidos do aparelho antes da rodada (hoje: versão do banco da Central).
+  Cada história acrescenta o campo de que a sua verificação precisa e o preenche em `loadSelfTestData()`
+  (`src/features/errorCenter/selfTestRunner.ts`). As verificações só leem: são funções puras.
+- **Registro:** `src/observability/selfTestChecks.ts` (`DEFAULT_CHECKS`), registradas na instância padrão `selfTest`.
+- **Problema encontrado** vai para a Central como aviso, com o código da verificação. **Verificação que lança**
+  vira `APP-003` (contexto `{ verificacao }`), aparece como "falhou" e as outras continuam. Falha ao ler os dados
+  do aparelho vira `DAT-001` (contexto `{ etapa: "autodiagnóstico" }`) e o painel mostra "Não foi possível ler os dados do aparelho."
+- **Quando roda:** em dev, logo depois de a Central carregar, na abertura do app (`startErrorCenter`, sem segurar a tela),
+  e pelo botão "Rodar autodiagnóstico" da Central. Dois pedidos seguidos usam a mesma rodada.
+- **Na Central:** painel com o botão ("Rodando…" e desativado durante a rodada), "O autodiagnóstico ainda não rodou"
+  antes da primeira rodada, e depois uma linha por verificação (código, nome, "ok" / "N problemas" / "falhou", tempo)
+  com os problemas embaixo.
+- **`APP-101`** confere o banco da Central (`prumo-dev-errors.db`): `PRAGMA user_version` igual a
+  `DEV_ERROR_DB_VERSION` (hoje 1, em `errorLogRepo.ts`). Banco sem versão (P0-S0-06/07) sobe para 1 ao abrir;
+  banco mais novo que o app não é rebaixado, e o APP-101 acusa. O banco principal ganha a sua verificação na P1-S1-01 (`DAT-103`).
 
 ## Catálogo de códigos (`src/observability/codes.ts`)
 
@@ -215,7 +235,7 @@ Códigos previstos pelas histórias (cada história os cria quando for implement
 |---|---|---|---|
 | `UI-002` | error | Falha numa ação da tela da Central de Erros (ex.: copiar relatório) | P0-S0-07 |
 | `APP-003` | error | Uma verificação do autodiagnóstico lançou exceção | P0-S0-08 |
-| `APP-101` | autodiag. | Versão do banco diferente da esperada | P0-S0-08 |
+| `APP-101` | autodiag. | Versão do banco da Central de Erros diferente da esperada | P0-S0-08 |
 | `DAT-101` | autodiag. | Itens em quarentena (inválidos) | P1-S1-02 |
 | `DAT-102` | autodiag. | Anexo aponta para arquivo inexistente | P1-S4-03 |
 | `DAT-103` | autodiag. | Versão do esquema diferente da esperada | P1-S1-01 |

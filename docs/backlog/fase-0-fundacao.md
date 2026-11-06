@@ -135,6 +135,14 @@ Como desenvolvedor, quero um lugar para verificações automáticas dos dados re
 
 **Testes:** registro, execução, verificação que lança vira problema `APP-003` em vez de derrubar o app.
 
+*(decidido em 2026-11-06, na checagem de Ready)*
+- `APP-101` confere o banco **da Central de Erros** (`prumo-dev-errors.db`), que passa a guardar a
+  versão do esquema (`PRAGMA user_version = 1`). O banco principal ganha a sua verificação na P1-S1-01 (`DAT-103`).
+- Estados do resultado na Central: **vazio** "O autodiagnóstico ainda não rodou"; **rodando** botão
+  desativado com "Rodando…"; **normal** uma linha por verificação (nome, "ok" ou "N problemas", tempo
+  em ms) e os problemas embaixo; **erro** a verificação que lançou aparece como "falhou" com a mensagem
+  (vira `APP-003`) e as outras continuam. Os problemas também entram na lista da Central como aviso.
+
 ---
 
 ### P0-S0-09 · Tokens de design e componentes base — P

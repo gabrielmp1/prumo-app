@@ -3,7 +3,7 @@
  */
 import type { ErrorEvent, Severity } from '../../observability/types';
 import { openMemoryDatabase } from '../../../test/tools/nodeSqlite';
-import { createErrorLogRepo, MAX_ERROR_GROUPS } from './errorLogRepo';
+import { createErrorLogRepo, DEV_ERROR_DB_VERSION, MAX_ERROR_GROUPS } from './errorLogRepo';
 
 function evento(parcial: Partial<ErrorEvent> = {}): ErrorEvent {
   return {
@@ -153,5 +153,28 @@ describe('P0-S0-07 · errorLogRepo: resolvido e última abertura', () => {
     await repo.setLastSeen('2026-11-06T10:00:00.000Z');
     await repo.setLastSeen('2026-11-06T12:00:00.000Z');
     expect(await (await createErrorLogRepo(db)).getLastSeen()).toBe('2026-11-06T12:00:00.000Z');
+  });
+
+  // P0-S0-08 · versão do esquema (PRAGMA user_version), conferida pelo autodiagnóstico (APP-101).
+  it('P0-S0-08 · banco novo fica na versão esperada do esquema', async () => {
+    const repo = await createErrorLogRepo(openMemoryDatabase());
+    expect(DEV_ERROR_DB_VERSION).toBe(1);
+    expect(await repo.schemaVersion()).toBe(DEV_ERROR_DB_VERSION);
+  });
+
+  it('P0-S0-08 · banco antigo, sem versão (antes da P0-S0-08), sobe para a versão esperada', async () => {
+    const db = openMemoryDatabase();
+    await (await createErrorLogRepo(db)).record(evento());
+    await db.execAsync('PRAGMA user_version = 0'); // como ficou nos aparelhos da P0-S0-06/07
+
+    const reaberto = await createErrorLogRepo(db);
+    expect(await reaberto.schemaVersion()).toBe(DEV_ERROR_DB_VERSION);
+    expect(await reaberto.list()).toHaveLength(1); // os erros antigos continuam lá
+  });
+
+  it('P0-S0-08 · banco mais novo que o app não é rebaixado (o autodiagnóstico acusa)', async () => {
+    const db = openMemoryDatabase();
+    await db.execAsync('PRAGMA user_version = 7');
+    expect(await (await createErrorLogRepo(db)).schemaVersion()).toBe(7);
   });
 });

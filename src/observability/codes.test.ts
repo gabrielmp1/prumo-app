@@ -30,8 +30,24 @@ describe('P0-S0-04 · catálogo de códigos', () => {
   it('todo código do catálogo está documentado no doc 04 com a mesma severidade', () => {
     const documentados = codigosNoTrecho('Códigos iniciais');
     for (const [codigo, info] of Object.entries(CODES)) {
-      expect([codigo, documentados.get(codigo)]).toEqual([codigo, info.severity]);
+      // Autodiagnóstico aparece no doc como "autodiag." (P0-S0-08).
+      const noDoc = 'selfTest' in info && info.selfTest ? 'autodiag.' : info.severity;
+      expect([codigo, documentados.get(codigo)]).toEqual([codigo, noDoc]);
     }
+  });
+
+  it('P0-S0-08 · códigos de autodiagnóstico: severidade aviso e centena 1xx', () => {
+    const autodiag = Object.entries(CODES).filter(([, info]) => 'selfTest' in info);
+    expect(autodiag.map(([codigo]) => codigo)).toContain('APP-101');
+    for (const [codigo, info] of autodiag) {
+      expect([codigo, info.severity]).toEqual([codigo, 'warning']);
+      expect(codigo).toMatch(/^[A-Z]+-1\d{2}$/);
+    }
+  });
+
+  it('P0-S0-08 · APP-003: verificação do autodiagnóstico que lançou exceção', () => {
+    expect(CODES['APP-003']).toMatchObject({ severity: 'error', story: 'P0-S0-08' });
+    expect(CODES['APP-101']).toMatchObject({ story: 'P0-S0-08' });
   });
 
   it('cada código tem descrição, módulo e a história que o criou', () => {

@@ -9,6 +9,8 @@ import type { ErrorGroup, Severity } from '../../observability/types';
 import { filterGroups, modulesOf } from './filters';
 import { componentPath, formatWhen, SEVERITY_COLOR, SEVERITY_LABEL } from './format';
 import { formatAllReport, formatGroupReport } from './report';
+import { SelfTestPanel } from './SelfTestPanel';
+import { defaultSelfTestRunner, type SelfTestRunner } from './selfTestRunner';
 import { SimulateErrorButton } from './SimulateErrorButton';
 import { Screen } from '../../ui/Screen';
 import { defaultDevCenter, useDevCenterVersion } from './useDevCenter';
@@ -19,6 +21,7 @@ export interface ErrorCenterScreenProps {
   transport?: DevCenterTransport;
   copy?: (text: string) => Promise<void>;
   now?: () => Date;
+  selfTest?: SelfTestRunner;
 }
 
 async function copyToClipboard(text: string): Promise<void> {
@@ -30,6 +33,7 @@ export function ErrorCenterScreen({
   transport = defaultDevCenter(),
   copy = copyToClipboard,
   now = () => new Date(),
+  selfTest = defaultSelfTestRunner,
 }: ErrorCenterScreenProps) {
   useDevCenterVersion(transport);
   // "Só novos" compara com a abertura anterior; abrir a tela marca tudo como visto.
@@ -98,9 +102,9 @@ export function ErrorCenterScreen({
       <View style={styles.row}>
         <Action label="Copiar tudo" onPress={() => void copyReport(formatAllReport(all))} />
         <Action label="Limpar tudo" onPress={() => void transport.clear()} />
-        <Action label="Rodar autodiagnóstico" disabled hint="Chega na P0-S0-08" />
         <SimulateErrorButton visible />
       </View>
+      <SelfTestPanel runner={selfTest} />
 
       {feedback ? (
         <Text accessibilityLiveRegion="polite" style={styles.feedback}>
@@ -259,26 +263,13 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-function Action({
-  label,
-  onPress,
-  disabled = false,
-  hint,
-}: {
-  label: string;
-  onPress?: () => void;
-  disabled?: boolean;
-  hint?: string;
-}) {
+function Action({ label, onPress }: { label: string; onPress: () => void }) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
-      accessibilityHint={hint}
-      accessibilityState={{ disabled }}
-      disabled={disabled}
       onPress={onPress}
-      style={[styles.action, disabled && styles.disabled]}
+      style={styles.action}
     >
       <Text style={styles.actionText}>{label}</Text>
     </Pressable>
@@ -322,7 +313,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   actionText: { fontWeight: '600' },
-  disabled: { opacity: 0.4 },
   chip: {
     minHeight: 44,
     paddingHorizontal: 12,

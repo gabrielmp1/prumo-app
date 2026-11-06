@@ -206,10 +206,10 @@ describe('P0-S0-07 · tela da Central de Erros', () => {
     expect(await screen.findByRole('button', { name: /^PLN-003/ })).toBeOnTheScreen();
   });
 
-  it('tem "Simular erro" e "Rodar autodiagnóstico" (este desativado até a P0-S0-08)', async () => {
+  it('tem "Simular erro" e "Rodar autodiagnóstico" (ligado desde a P0-S0-08)', async () => {
     await montar().abrir();
     expect(screen.getByRole('button', { name: 'Simular erro' })).toBeOnTheScreen();
-    expect(screen.getByRole('button', { name: 'Rodar autodiagnóstico' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Rodar autodiagnóstico' })).toBeEnabled();
   });
 
   it('fora do modo dev (sem Central ligada): explica em vez de quebrar', async () => {

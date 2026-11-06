@@ -32,6 +32,12 @@ CREATE TABLE IF NOT EXISTS dev_error_meta (
 
 const LAST_SEEN = 'last_seen_at';
 
+/**
+ * Versão do esquema do banco da Central (PRAGMA user_version). Suba ao mudar o SCHEMA e trate
+ * a migração; o autodiagnóstico (APP-101) acusa banco em versão diferente.
+ */
+export const DEV_ERROR_DB_VERSION = 1;
+
 // A contagem é feita pelo próprio banco: assim, eventos que chegam antes de o app terminar
 // de carregar os grupos antigos não sobrescrevem a contagem.
 const UPSERT = `
@@ -104,9 +110,19 @@ function toGroup(row: Row): ErrorGroup {
 }
 
 /** Repositório da tabela `dev_error_log` (Central de Erros, só em dev). Cria a tabela se faltar. */
+async function readVersion(db: SqlDatabase): Promise<number> {
+  const row = await db.getFirstAsync<{ user_version: number }>('PRAGMA user_version', []);
+  return row?.user_version ?? 0;
+}
+
 export async function createErrorLogRepo(db: SqlDatabase): Promise<ErrorLogStore> {
   await db.execAsync(SCHEMA);
+  // Banco sem versão (P0-S0-06/07) ou mais antigo sobe; mais novo fica como está (APP-101 acusa).
+  if ((await readVersion(db)) < DEV_ERROR_DB_VERSION) {
+    await db.execAsync(`PRAGMA user_version = ${DEV_ERROR_DB_VERSION}`);
+  }
   return {
+    schemaVersion: () => readVersion(db),
     async record(event) {
       await db.runAsync(UPSERT, [
         event.fingerprint,

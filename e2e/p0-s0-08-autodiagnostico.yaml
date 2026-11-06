@@ -1,0 +1,28 @@
+# P0-S0-08 · Autodiagnóstico: roda sozinho ao abrir o app (dev) e pelo botão da Central.
+# Estado normal: APP-101 "ok" (banco da Central na versão esperada). Os estados vazio e de erro
+# são cobertos pelos testes de componente (ErrorCenterScreen.selfTest.test.tsx).
+# E2E PENDENTE DE RODAR: precisa do Maestro + emulador (ver STATUS).
+# Roda no Expo Go com o servidor do Expo ligado (npx expo start).
+appId: host.exp.exponent
+---
+- launchApp:
+    clearState: true
+- openLink: exp://127.0.0.1:8081
+- extendedWaitUntil:
+    visible: 'Prumo'
+    timeout: 60000
+- tapOn: 'Ajustes'
+- tapOn:
+    text: 'Versão.*'
+    repeat: 5
+- assertVisible: 'Central de Erros'
+# A rodada da abertura do app já deixou o resultado na tela.
+- assertVisible: 'Versão do banco da Central de Erros'
+- assertVisible: 'ok'
+- tapOn: 'Rodar autodiagnóstico'
+- extendedWaitUntil:
+    visible: 'Rodar autodiagnóstico'
+    timeout: 10000
+- assertVisible: 'Última rodada.*'
+- assertVisible: 'Versão do banco da Central de Erros'
+- assertNotVisible: 'falhou'

@@ -8,7 +8,6 @@
 
 ## A fazer (em ordem)
 
-- [ ] P0-S0-08 · Esqueleto do Autodiagnóstico
 - [ ] P0-S0-09 · Tokens de design e componentes base
 - [ ] P0-S0-10 · ADRs e STATUS (incluir ADR-007 a ADR-009 de segurança)
 
@@ -18,7 +17,7 @@ _(vazio)_
 
 ## Revisão
 
-_(vazio)_
+- [ ] P0-S0-08 · Esqueleto do Autodiagnóstico (branch `feat/P0-S0-08-self-test` enviada; **aguardando CI verde** para ir a Feito; **E2E pendente de rodar**)
 
 ## Feito
 
@@ -52,7 +51,7 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 ## Anotações para histórias futuras
 
 - **P0-S0-09** · No modo escuro do celular, os ícones da barra de status ficam quase invisíveis (claros sobre fundo claro): hoje o `StatusBar` usa `style="auto"`, que segue o tema do **sistema**. Ele precisa seguir o tema do **app** (fundo claro → ícones escuros; fundo escuro → ícones claros). Ver `app/_layout.tsx`. Visto no Samsung em 2026-11-06.
-- **P0-S0-08** · Ligar o botão "Rodar autodiagnóstico" da Central (hoje desativado, com a dica "Chega na P0-S0-08") em `src/features/errorCenter/ErrorCenterScreen.tsx`. Códigos previstos: `APP-003` e `APP-101` (doc 04).
+- **P1-S1-01** · Ao criar o banco principal, registrar a verificação `DAT-103` (versão do esquema) do mesmo jeito que o `APP-101`: campo novo em `SelfTestData`, leitura em `loadSelfTestData()` e verificação em `selfTestChecks.ts` (doc 04, "Como foi implementado (P0-S0-08)").
 
 ## Decisões e pendências
 
@@ -80,6 +79,10 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 - 2026-11-06 · P0-S0-07 · Os tipos das rotas (`typedRoutes`) são gerados em `.expo/types` quando o `expo start` roda. Ao criar uma rota nova, rode o Expo uma vez antes do `npm run check`, senão o `tsc` local reclama da rota nova (na CI essa pasta não existe e não há problema).
 - 2026-11-06 · BUG-002 · Toda tela usa `Screen` (`src/ui/Screen.tsx`), que respeita a área segura (barra de status, entalhe, barra de navegação). A tela inicial passou para `src/features/home` (regra: `app/` só fala com `features`).
 - 2026-11-06 · BUG-002 · Relatório da Central: horário local com fuso e UTC, pilha de componentes ("Componentes: A > B > C", vinda de `error.componentStack`, que o React Native anexa) e URL do bundle encurtada (`bundle:linha:coluna`). O texto copiado passa por `sanitizeReport()` (`src/observability/sanitize.ts`), que remove URLs de servidor, pastas do usuário e e-mails; uso obrigatório no envio ao servidor (P3-S13-03).
+- 2026-11-06 · P0-S0-08 · Autodiagnóstico: `createSelfTest` em `src/observability/selfTest.ts` e verificações em `selfTestChecks.ts`. Verificações são puras e recebem `SelfTestData`, lido antes da rodada por `loadSelfTestData()` (`src/features/errorCenter/selfTestRunner.ts`). Problema → aviso na Central com o código da verificação; verificação que lança → `APP-003`; falha ao ler os dados → `DAT-001`. Roda na abertura do app (dev, sem segurar a tela) e pelo botão da Central.
+- 2026-11-06 · P0-S0-08 · `APP-101` confere o banco **da Central** (`PRAGMA user_version` = `DEV_ERROR_DB_VERSION` = 1), decidido com o usuário na checagem de Ready; o banco principal terá o `DAT-103` (P1-S1-01). Banco antigo sem versão sobe para 1; banco mais novo não é rebaixado.
+- 2026-11-06 · P0-S0-08 · Códigos de autodiagnóstico ficam no catálogo com `selfTest: true` (severidade `warning`; no doc 04 aparecem como `autodiag.`). O tipo `SelfTestCode` só aceita esses códigos em `registerCheck`.
+- 2026-11-06 · P0-S0-08 · O `test/setup.ts` carrega `src/observability` antes de cada arquivo de teste, então um `jest.mock` de módulo usado por ela chega tarde. Nesse caso, carregar o módulo de novo com `jest.isolateModules` + `jest.doMock` (exemplo em `selfTest.test.ts`).
 - Pendência · **E2E pendente de rodar**: fluxos `.yaml` são escritos normalmente; antes de fechar a Sprint 0, guiar a instalação do Java 17, do Android Studio (emulador) e do Maestro.
 - Pendência · Avisar antes da primeira história que não roda no Expo Go (provavelmente P1-S1-05, SQLCipher) e explicar o development build.
 - 2026-11-06 · P0-S0-03 · Repositório **privado** em `github.com/gabrielmp1/prumo-app`. No plano grátis, as regras de proteção de branch não são aplicadas em repositório privado: vale o combinado de só juntar na `main` com a CI verde. O passo a passo do README fica para quando o repositório virar público ou o plano mudar.
@@ -90,10 +93,10 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 
 ### Passagem para a próxima sessão (2026-11-06)
 
-**Onde paramos:** Sprint 0 com 7 de 10 histórias feitas (P0-S0-01 a 07) + BUG-001 e BUG-002 resolvidos; tudo na `main` e no GitHub. **Próxima história: P0-S0-08 · Esqueleto do Autodiagnóstico** (ver "Anotações para histórias futuras"). Depois: P0-S0-09 (tokens + componentes; inclui o `StatusBar`) e P0-S0-10 (9 ADRs + retro).
+**Onde paramos:** Sprint 0 com 7 de 10 histórias feitas (P0-S0-01 a 07) + BUG-001 e BUG-002 resolvidos; tudo na `main` e no GitHub. **P0-S0-08 (Autodiagnóstico) em Revisão**, na branch `feat/P0-S0-08-self-test`, esperando a CI. Com a CI verde: mover para Feito, juntar na `main`. Depois: P0-S0-09 (tokens + componentes; inclui o `StatusBar`) e P0-S0-10 (9 ADRs + retro).
 
 **Pendências abertas**
-- E2E escritos e **nunca rodados**: `e2e/p0-s0-06-simular-erro.yaml`, `e2e/p0-s0-07-acesso-ajustes.yaml` (Expo Go, `appId: host.exp.exponent`). Antes de fechar a Sprint 0: guiar o usuário na instalação do Java 17 (hoje tem Java 8), Android Studio com emulador e Maestro; rodar e ajustar os fluxos.
+- E2E escritos e **nunca rodados**: `e2e/p0-s0-06-simular-erro.yaml`, `e2e/p0-s0-07-acesso-ajustes.yaml`, `e2e/p0-s0-08-autodiagnostico.yaml` (Expo Go, `appId: host.exp.exponent`). Antes de fechar a Sprint 0: guiar o usuário na instalação do Java 17 (hoje tem Java 8), Android Studio com emulador e Maestro; rodar e ajustar os fluxos.
 - Avisar o usuário **antes** da primeira história que não roda no Expo Go (provável P1-S1-05, SQLCipher) e explicar o development build.
 - Pasta antiga `Downloads\Nova pasta (9)\prumo-app` ainda pode existir: o usuário apaga depois de fechar a sessão antiga.
 

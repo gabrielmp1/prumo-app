@@ -90,6 +90,7 @@ describe('P0-S0-06 · persistência da Central de Erros', () => {
       clear: () => Promise.resolve(),
       getLastSeen: () => Promise.resolve(null),
       setLastSeen: () => Promise.resolve(),
+      schemaVersion: () => Promise.resolve(1),
     };
     const transporte = new DevCenterTransport();
     transporte.attachStore(quebrado);

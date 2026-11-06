@@ -79,3 +79,44 @@ describe('P0-S0-06 · inicialização da Central de Erros', () => {
     expect(env.instalado()).toBe(false);
   });
 });
+
+// P0-S0-08 · o autodiagnóstico roda em segundo plano ao abrir o app (modo dev).
+describe('P0-S0-08 · autodiagnóstico na abertura do app', () => {
+  it('em dev: roda depois de carregar a Central', async () => {
+    const db = openMemoryDatabase();
+    const central = new DevCenterTransport();
+    const center = createErrorCenter({ mode: 'dev', transports: [central] });
+    const ordem: string[] = [];
+    const selfTestRunner = {
+      run: jest.fn(async () => {
+        ordem.push(`autodiagnóstico com ${String(await central.schemaVersion())}`);
+      }),
+    };
+    await startErrorCenter({
+      center,
+      env: envFalso(),
+      openStore: () => createErrorLogRepo(db),
+      selfTestRunner,
+    });
+    expect(ordem).toEqual(['autodiagnóstico com 1']);
+  });
+
+  it('em dev, mesmo se o banco não abrir, o autodiagnóstico roda', async () => {
+    const center = createErrorCenter({ mode: 'dev', transports: [new DevCenterTransport()] });
+    const selfTestRunner = { run: jest.fn(() => Promise.resolve()) };
+    await startErrorCenter({
+      center,
+      env: envFalso(),
+      openStore: () => Promise.reject(new Error('sem espaço')),
+      selfTestRunner,
+    });
+    expect(selfTestRunner.run).toHaveBeenCalledTimes(1);
+  });
+
+  it('fora do modo dev (sem Central): não roda', async () => {
+    const center = createErrorCenter({ mode: 'prod', transports: [] });
+    const selfTestRunner = { run: jest.fn(() => Promise.resolve()) };
+    await startErrorCenter({ center, env: envFalso(), openStore: jest.fn(), selfTestRunner });
+    expect(selfTestRunner.run).not.toHaveBeenCalled();
+  });
+});
