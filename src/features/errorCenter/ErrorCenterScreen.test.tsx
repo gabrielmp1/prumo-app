@@ -138,6 +138,36 @@ describe('P0-S0-07 · tela da Central de Erros', () => {
     expect(m.copiados[1]).toMatch(/^## Erro PLN-003 \(x1\) — planner/);
   });
 
+  it('o relatório copiado passa pelo filtro de privacidade (sanitizeReport)', async () => {
+    const m = montar();
+    m.center.reportError('DAT-003', new Error('falhou para maria@gmail.com'), {
+      arquivo: 'C:\\Users\\ggabr\\x.pdf',
+    });
+    await m.abrir();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Copiar tudo' }));
+    await fireEvent.press(screen.getByRole('button', { name: /^DAT-003/ }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Copiar relatório' }));
+
+    for (const copiado of m.copiados) {
+      expect(copiado).not.toContain('maria@gmail.com');
+      expect(copiado).not.toContain('ggabr');
+      expect(copiado).toContain('<e-mail>');
+    }
+    expect(m.copiados).toHaveLength(2);
+  });
+
+  it('detalhe mostra a pilha de componentes, quando existe', async () => {
+    const m = montar();
+    const erro = Object.assign(new Error('tela quebrou'), {
+      componentStack: '\n    in SimulatedCrash\n    in SimulateErrorButton',
+    });
+    m.center.reportFatal('UI-001', erro);
+    await m.abrir();
+    await fireEvent.press(screen.getByRole('button', { name: /^UI-001/ }));
+    expect(screen.getByText('SimulatedCrash > SimulateErrorButton')).toBeOnTheScreen();
+  });
+
   it('falha ao copiar: avisa na tela e reporta (sem quebrar)', async () => {
     expectReportedError('UI-002');
     const m = montar();

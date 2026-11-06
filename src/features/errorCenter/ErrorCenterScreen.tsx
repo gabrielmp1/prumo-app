@@ -1,14 +1,16 @@
 import * as Clipboard from 'expo-clipboard';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { reportError } from '../../observability';
+import { sanitizeReport, shortenBundleUrls } from '../../observability/sanitize';
 import type { DevCenterTransport } from '../../observability/transports/devCenterTransport';
 import type { ErrorGroup, Severity } from '../../observability/types';
 import { filterGroups, modulesOf } from './filters';
-import { formatWhen, SEVERITY_COLOR, SEVERITY_LABEL } from './format';
+import { componentPath, formatWhen, SEVERITY_COLOR, SEVERITY_LABEL } from './format';
 import { formatAllReport, formatGroupReport } from './report';
 import { SimulateErrorButton } from './SimulateErrorButton';
+import { Screen } from '../../ui/Screen';
 import { defaultDevCenter, useDevCenterVersion } from './useDevCenter';
 
 const SEVERITY_FILTERS: (Severity | undefined)[] = [undefined, 'fatal', 'error', 'warning'];
@@ -46,9 +48,9 @@ export function ErrorCenterScreen({
 
   if (!transport) {
     return (
-      <View style={styles.screen}>
+      <Screen contentStyle={styles.screen}>
         <Text>A Central de Erros só existe no modo de desenvolvimento.</Text>
-      </View>
+      </Screen>
     );
   }
 
@@ -62,7 +64,8 @@ export function ErrorCenterScreen({
 
   async function copyReport(text: string) {
     try {
-      await copy(text);
+      // Filtro de privacidade: sem URLs de servidor, pastas do usuário nem e-mails.
+      await copy(sanitizeReport(text));
       setFeedback('Relatório copiado');
     } catch (error) {
       reportError('UI-002', error, { acao: 'copiar relatório' });
@@ -87,7 +90,7 @@ export function ErrorCenterScreen({
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.screen}>
+    <Screen scroll contentStyle={styles.screen}>
       <Text accessibilityRole="header" style={styles.title}>
         Central de Erros
       </Text>
@@ -150,7 +153,7 @@ export function ErrorCenterScreen({
           <GroupRow key={g.fingerprint} group={g} onPress={() => setSelected(g.fingerprint)} />
         ))
       )}
-    </ScrollView>
+    </Screen>
   );
 }
 
@@ -192,7 +195,7 @@ function GroupDetail({
 }) {
   const e = group.lastEvent;
   return (
-    <ScrollView contentContainerStyle={styles.screen}>
+    <Screen scroll contentStyle={styles.screen}>
       <Action label="Voltar" onPress={onBack} />
       <Text accessibilityRole="header" style={styles.title}>
         {group.code} · {group.module}
@@ -218,6 +221,11 @@ function GroupDetail({
           {e.context === undefined ? '(nenhum)' : JSON.stringify(e.context)}
         </Text>
       </Field>
+      <Field label="Componentes (o que quebrou primeiro)">
+        <Text selectable style={styles.mono}>
+          {componentPath(e.componentStack) ?? '(não disponível)'}
+        </Text>
+      </Field>
       <Field label="Tela">
         <Text>{e.screen ?? '(desconhecida)'}</Text>
       </Field>
@@ -235,10 +243,10 @@ function GroupDetail({
       </Field>
       <Field label="Pilha">
         <Text selectable style={styles.mono}>
-          {e.stack ?? '(nenhuma)'}
+          {e.stack ? shortenBundleUrls(e.stack) : '(nenhuma)'}
         </Text>
       </Field>
-    </ScrollView>
+    </Screen>
   );
 }
 

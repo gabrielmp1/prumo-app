@@ -25,6 +25,8 @@ export interface ErrorEvent {
   module: string;
   context?: Context;
   stack?: string;
+  /** Pilha de componentes React (o React Native anexa ao erro quando uma tela quebra). */
+  componentStack?: string;
   breadcrumbs: Breadcrumb[]; // últimas 50 ações
   screen?: string;
   appVersion: string;

@@ -86,6 +86,21 @@ describe('P0-S0-04 · cada função reporta com a severidade correta', () => {
     );
   });
 
+  it('guarda a pilha de componentes que o React Native anexa ao erro de tela', () => {
+    const { center, transporte } = montar();
+    const erro = Object.assign(new Error('tela quebrou'), {
+      componentStack: '\n    in SimulatedCrash\n    in View',
+    });
+    center.reportFatal('UI-001', erro);
+    expect(ultimo(transporte).componentStack).toBe('\n    in SimulatedCrash\n    in View');
+  });
+
+  it('erro sem pilha de componentes: o campo fica de fora', () => {
+    const { center, transporte } = montar();
+    center.reportError('DAT-003', new Error('x'));
+    expect(ultimo(transporte)).not.toHaveProperty('componentStack');
+  });
+
   it('P0-S0-07 · o evento leva a versão e a plataforma informadas na abertura do app', () => {
     const { center, transporte } = montar();
     center.setAppInfo({ appVersion: '0.3.0', platform: 'android 34' });

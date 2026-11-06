@@ -1,4 +1,6 @@
+import { shortenBundleUrls } from '../../observability/sanitize';
 import type { Breadcrumb, ErrorGroup } from '../../observability/types';
+import { componentPath, formatLocalAndUtc } from './format';
 
 // "Copiar relatório" (doc 04): Markdown pronto para colar no Claude Code com /investigar-erro.
 
@@ -14,7 +16,7 @@ function formatTrail(trail: Breadcrumb[]): string {
 
 function formatStack(stack: string | undefined): string[] {
   if (!stack) return ['Pilha: (nenhuma)'];
-  const lines = stack.split('\n');
+  const lines = shortenBundleUrls(stack).split('\n');
   const shown = lines.slice(0, MAX_STACK_LINES);
   const hidden = lines.length - shown.length;
   return ['Pilha:', '```', ...shown, ...(hidden > 0 ? [`    … (+${hidden} linhas)`] : []), '```'];
@@ -31,10 +33,13 @@ export function formatGroupReport(group: ErrorGroup): string {
   const e = group.lastEvent;
   return [
     `## Erro ${group.code} (x${group.count}) — ${group.module}`,
-    `Severidade: ${group.severity} · Primeira vez: ${group.firstAt} · Última vez: ${group.lastAt}`,
+    `Severidade: ${group.severity}`,
+    `Primeira vez: ${formatLocalAndUtc(group.firstAt)}`,
+    `Última vez: ${formatLocalAndUtc(group.lastAt)}`,
     `Mensagem: ${e.message}`,
     `Contexto: ${e.context === undefined ? '(nenhum)' : JSON.stringify(e.context)}`,
     `Tela: ${e.screen ?? '(desconhecida)'}`,
+    `Componentes: ${componentPath(e.componentStack) ?? '(não disponível)'}`,
     `Trilha: ${formatTrail(e.breadcrumbs)}`,
     ...formatStack(e.stack),
     `Versão: ${formatVersion(e.appVersion, e.platform)}`,

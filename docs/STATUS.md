@@ -35,6 +35,7 @@ _(vazio)_
 _(formato: `BUG-001 · descrição · código de erro · história relacionada · status`)_
 
 - BUG-001 · Jest (jest-expo) quebra quando o caminho da pasta tem parênteses, ex. `Nova pasta (9)`: o mock automático lê o caminho pelo rastro de pilha · ambiente · P0-S0-01 · **resolvido** em 2026-11-05 (causa: parênteses no caminho da pasta; projeto copiado para `C:\Users\ggabr\Projetos\prumo-app`, onde `npm ci` e `npm run check` passaram)
+- BUG-002 · Título da Central de Erros ficava por baixo da barra de status do Android (relógio em cima do título); as demais telas tinham o mesmo risco · — · P0-S0-07 · **corrigido** na branch `fix/BUG-002-relatorio-e-area-segura`, aguardando conferência no celular (causa: telas sem área segura; agora todas usam `src/ui/Screen`, com `react-native-safe-area-context`; teste de regressão em `test/safeArea.test.tsx`)
 
 ## Observações de ambiente (não são bugs do app)
 
@@ -45,6 +46,7 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 - Integração com calendário do Moodle (assinatura iCal) — avaliar na Fase 3
 - Planejar pela energia usando dados de sono do relógio — depende de acesso aos dados da Samsung
 - Painel próprio na borda da Samsung — investigar na P3-S19-02 (hoje: atalhos no painel de apps da borda)
+- Registrar na trilha da Central os toques em botões (`breadcrumb('ui', ...)`), não só a navegação: hoje a trilha mostra só `nav:/`. Fazer quando existirem botões de verdade (Sprint 3), de preferência num componente de botão base que registre sozinho (P0-S0-09 cria os componentes)
 
 ## Decisões e pendências
 
@@ -70,6 +72,8 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 - 2026-11-06 · P0-S0-07 · Central de Erros: rota `/dev/erros` protegida por `Stack.Protected` (só dev), selo vermelho de erros novos na tela inicial, Ajustes provisório com 5 toques na versão. Novo código `UI-002` (falha numa ação da Central, ex. copiar). Dependência nova: `expo-clipboard`. "Rodar autodiagnóstico" fica desativado até a P0-S0-08; "Gerar dados de exemplo" fica para o banco principal (Sprint 1).
 - 2026-11-06 · P0-S0-07 · Testes rodam com fuso fixo `America/Sao_Paulo` (`test/globalSetup.js`): horários na tela não dependem do computador nem da CI.
 - 2026-11-06 · P0-S0-07 · Os tipos das rotas (`typedRoutes`) são gerados em `.expo/types` quando o `expo start` roda. Ao criar uma rota nova, rode o Expo uma vez antes do `npm run check`, senão o `tsc` local reclama da rota nova (na CI essa pasta não existe e não há problema).
+- 2026-11-06 · BUG-002 · Toda tela usa `Screen` (`src/ui/Screen.tsx`), que respeita a área segura (barra de status, entalhe, barra de navegação). A tela inicial passou para `src/features/home` (regra: `app/` só fala com `features`).
+- 2026-11-06 · BUG-002 · Relatório da Central: horário local com fuso e UTC, pilha de componentes ("Componentes: A > B > C", vinda de `error.componentStack`, que o React Native anexa) e URL do bundle encurtada (`bundle:linha:coluna`). O texto copiado passa por `sanitizeReport()` (`src/observability/sanitize.ts`), que remove URLs de servidor, pastas do usuário e e-mails; uso obrigatório no envio ao servidor (P3-S13-03).
 - Pendência · **E2E pendente de rodar**: fluxos `.yaml` são escritos normalmente; antes de fechar a Sprint 0, guiar a instalação do Java 17, do Android Studio (emulador) e do Maestro.
 - Pendência · Avisar antes da primeira história que não roda no Expo Go (provavelmente P1-S1-05, SQLCipher) e explicar o development build.
 - 2026-11-06 · P0-S0-03 · Repositório **privado** em `github.com/gabrielmp1/prumo-app`. No plano grátis, as regras de proteção de branch não são aplicadas em repositório privado: vale o combinado de só juntar na `main` com a CI verde. O passo a passo do README fica para quando o repositório virar público ou o plano mudar.
@@ -81,4 +85,4 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 
 | Sprint | Histórias feitas | Bugs abertos/fechados | Erros na Central (novos) | Cobertura core | `plan()` (ms) |
 |---|---|---|---|---|---|
-| S0 | 7 | 1 / 1 | — | 100% | — |
+| S0 | 7 | 2 / 1 | — | 100% | — |

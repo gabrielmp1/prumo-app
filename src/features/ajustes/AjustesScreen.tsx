@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 
+import { Screen } from '../../ui/Screen';
 import { createTapCounter } from '../errorCenter/filters';
 
 /**
@@ -14,7 +15,7 @@ export function AjustesScreen({ version, devTools }: { version: string; devTools
 
   const label = `Versão ${version}`;
   return (
-    <View style={styles.screen}>
+    <Screen contentStyle={styles.screen}>
       <Text accessibilityRole="header" style={styles.title}>
         Ajustes
       </Text>
@@ -28,12 +29,12 @@ export function AjustesScreen({ version, devTools }: { version: string; devTools
       >
         <Text>{label}</Text>
       </Pressable>
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, padding: 16, gap: 16 },
+  screen: { padding: 16, gap: 16 },
   title: { fontSize: 22, fontWeight: '700' },
   version: { minHeight: 44, justifyContent: 'center' },
 });
