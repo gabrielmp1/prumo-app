@@ -19,7 +19,7 @@ _(vazio)_
 
 ## Revisão
 
-- [ ] P0-S0-06 · Capturas globais e persistência — pronta na branch `feat/P0-S0-06-global-capture-persistence`; junta na `main` com a CI verde. **E2E pendente de rodar** (`e2e/p0-s0-06-simular-erro.yaml`)
+_(vazio)_
 
 ## Feito
 
@@ -28,6 +28,7 @@ _(vazio)_
 - [x] P0-S0-03 · Integração contínua no GitHub (2026-11-06; CI verde na branch antes de juntar; CI da `main` verde)
 - [x] P0-S0-04 · Núcleo da Central de Erros (2026-11-06; CI verde na branch)
 - [x] P0-S0-05 · Testes falham em erro inesperado (2026-11-06; CI verde na branch)
+- [x] P0-S0-06 · Capturas globais e persistência (2026-11-06; CI verde na branch; **E2E pendente de rodar**)
 
 ## Bugs
 
@@ -77,4 +78,4 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 
 | Sprint | Histórias feitas | Bugs abertos/fechados | Erros na Central (novos) | Cobertura core | `plan()` (ms) |
 |---|---|---|---|---|---|
-| S0 | 5 | 1 / 1 | — | 100% | — |
+| S0 | 6 | 1 / 1 | — | 100% | — |
