@@ -69,8 +69,22 @@ function defaultMonotonic(): number {
   return typeof performance !== 'undefined' ? performance.now() : Date.now();
 }
 
-function describeError(error: unknown): { message: string; stack?: string } {
-  if (error instanceof Error) return { message: error.message, stack: error.stack };
+interface ErrorDetails {
+  message: string;
+  stack?: string;
+  componentStack?: string;
+}
+
+function describeError(error: unknown): ErrorDetails {
+  if (error instanceof Error) {
+    // O React Native anexa a pilha de componentes ao erro quando uma tela quebra.
+    const componentStack = (error as { componentStack?: unknown }).componentStack;
+    return {
+      message: error.message,
+      stack: error.stack,
+      ...(typeof componentStack === 'string' && { componentStack }),
+    };
+  }
   if (typeof error === 'string') return { message: error };
   try {
     return { message: JSON.stringify(error) ?? String(error) };
@@ -105,8 +119,9 @@ export function createErrorCenter(options: ErrorCenterOptions): ErrorCenter {
     severity: Severity,
     message: string,
     context?: Context,
-    stack?: string,
+    details: Omit<ErrorDetails, 'message'> = {},
   ): ErrorEvent {
+    const { stack, componentStack } = details;
     const event: ErrorEvent = {
       id: newId(),
       code,
@@ -115,6 +130,7 @@ export function createErrorCenter(options: ErrorCenterOptions): ErrorCenter {
       module: moduleOf(code),
       ...(context !== undefined && { context }),
       ...(stack !== undefined && { stack }),
+      ...(componentStack !== undefined && { componentStack }),
       breadcrumbs: trail.toArray(),
       ...(screen !== undefined && { screen }),
       appVersion,
@@ -138,13 +154,13 @@ export function createErrorCenter(options: ErrorCenterOptions): ErrorCenter {
     transports,
 
     reportError(code, error, context) {
-      const { message, stack } = describeError(error);
-      return emit(code, 'error', message, context, stack);
+      const { message, ...details } = describeError(error);
+      return emit(code, 'error', message, context, details);
     },
 
     reportFatal(code, error, context) {
-      const { message, stack } = describeError(error);
-      return emit(code, 'fatal', message, context, stack);
+      const { message, ...details } = describeError(error);
+      return emit(code, 'fatal', message, context, details);
     },
 
     reportWarning(code, message, context) {

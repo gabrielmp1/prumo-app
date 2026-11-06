@@ -18,7 +18,9 @@ function grupo(parcial: Partial<ErrorGroup> = {}): ErrorGroup {
       module: 'planner',
       context: { tarefas: 2, dia: '2026-11-06' },
       stack:
-        'Error: Tarefa não cabe até o prazo\n    at plan (plan.ts:10:5)\n    at run (x.ts:1:1)',
+        'Error: Tarefa não cabe até o prazo\n    at plan (http://9vsclq0-anonymous-8081.exp.direct/node_modules/expo-router/entry.bundle//&platform=android&dev=true:100374:20)\n    at run (x.ts:1:1)',
+      componentStack:
+        '\n    in SimulatedCrash (at SimulateErrorButton.tsx:20)\n    in SimulateErrorButton\n    in RCTView (created by View)\n    in View',
       breadcrumbs: [
         { category: 'nav', message: '/dia', at: '2026-11-06T09:58:00.000Z' },
         { category: 'ui', message: 'toque bloco', at: '2026-11-06T09:59:00.000Z' },
@@ -40,15 +42,18 @@ describe('P0-S0-07 · relatório da Central de Erros', () => {
     expect(formatGroupReport(grupo())).toBe(
       [
         '## Erro PLN-003 (x4) — planner',
-        'Severidade: warning · Primeira vez: 2026-11-06T09:00:00.000Z · Última vez: 2026-11-06T10:00:00.000Z',
+        'Severidade: warning',
+        'Primeira vez: 06/11 06:00 (UTC-3) · 2026-11-06T09:00:00Z',
+        'Última vez: 06/11 07:00 (UTC-3) · 2026-11-06T10:00:00Z',
         'Mensagem: Tarefa não cabe até o prazo',
         'Contexto: {"tarefas":2,"dia":"2026-11-06"}',
         'Tela: /dia',
+        'Componentes: SimulatedCrash > SimulateErrorButton',
         'Trilha: nav:/dia → ui:toque bloco → data:salvar tarefa',
         'Pilha:',
         '```',
         'Error: Tarefa não cabe até o prazo',
-        '    at plan (plan.ts:10:5)',
+        '    at plan (bundle:100374:20)',
         '    at run (x.ts:1:1)',
         '```',
         'Versão: 0.3.0 (sprint 3) · Android 14',
@@ -64,6 +69,7 @@ describe('P0-S0-07 · relatório da Central de Erros', () => {
         ...base.lastEvent,
         context: undefined,
         stack: undefined,
+        componentStack: undefined,
         screen: undefined,
         platform: undefined,
         breadcrumbs: [],
@@ -74,6 +80,7 @@ describe('P0-S0-07 · relatório da Central de Erros', () => {
     expect(texto).toContain('## Erro PLN-003 (x1) — planner');
     expect(texto).toContain('Contexto: (nenhum)');
     expect(texto).toContain('Tela: (desconhecida)');
+    expect(texto).toContain('Componentes: (não disponível)');
     expect(texto).toContain('Trilha: (vazia)');
     expect(texto).toContain('Pilha: (nenhuma)');
     expect(texto).toContain('Versão: 0.0.1 (sprint 0) · plataforma desconhecida');
@@ -99,6 +106,83 @@ describe('P0-S0-07 · relatório da Central de Erros', () => {
     const texto = formatGroupReport(grupo({ lastEvent: { ...base.lastEvent, stack } }));
     expect(texto).toContain('linha 15\n    … (+15 linhas)\n```');
     expect(texto).not.toContain('linha 16');
+  });
+
+  it('pilha de componentes no formato "at" (React 19) também vira lista de nomes', () => {
+    const base = grupo();
+    const componentStack =
+      '\n    at SimulatedCrash (http://x/entry.bundle:1:2)\n    at HomeScreen (<anonymous>)';
+    const texto = formatGroupReport(grupo({ lastEvent: { ...base.lastEvent, componentStack } }));
+    expect(texto).toContain('Componentes: SimulatedCrash > HomeScreen\n');
+  });
+
+  it('pilha de componentes longa: 5 nomes nossos e quantos ficaram de fora', () => {
+    const base = grupo();
+    const componentStack = Array.from({ length: 8 }, (_, i) => `    in C${i + 1}`).join('\n');
+    const texto = formatGroupReport(grupo({ lastEvent: { ...base.lastEvent, componentStack } }));
+    expect(texto).toContain('Componentes: C1 > C2 > C3 > C4 > C5 > … (+3)\n');
+  });
+
+  // Caso real do celular: "SimulatedCrash > SimulateErrorButton > RCTView > View > … (+87)".
+  it('esconde componentes internos do React Native, do Expo Router e da navegação', () => {
+    const base = grupo();
+    const internos = [
+      'SimulatedCrash',
+      'SimulateErrorButton',
+      'RCTView',
+      'View',
+      'RCTView',
+      'View',
+      'Screen',
+      'HomeScreen',
+      'Index',
+      'Route',
+      'Try',
+      'SceneView',
+      'RNSScreen',
+      'AnimatedComponent',
+      'ScreenStack',
+      'NativeStackNavigator',
+      'SafeAreaProviderCompat',
+      'ThemeContext',
+      'ExpoRoot',
+      'Text',
+      'RCTText',
+      'ScrollView',
+      'RCTScrollContentView',
+      'Pressable',
+      'Suspense',
+      'Unknown',
+      'Anonymous',
+      'RootLayout',
+      'AppContainer',
+    ];
+    const componentStack = internos.map((n) => `    in ${n}`).join('\n');
+    const texto = formatGroupReport(grupo({ lastEvent: { ...base.lastEvent, componentStack } }));
+    expect(texto).toContain(
+      'Componentes: SimulatedCrash > SimulateErrorButton > Screen > HomeScreen > Index > … (+1)\n',
+    );
+  });
+
+  it('nomes repetidos em sequência aparecem uma vez só', () => {
+    const base = grupo();
+    const componentStack = '    in Lista\n    in Lista\n    in Tela';
+    const texto = formatGroupReport(grupo({ lastEvent: { ...base.lastEvent, componentStack } }));
+    expect(texto).toContain('Componentes: Lista > Tela\n');
+  });
+
+  it('pilha só com componentes internos: "(não disponível)"', () => {
+    const base = grupo();
+    const componentStack = '    in RCTView\n    in View';
+    const texto = formatGroupReport(grupo({ lastEvent: { ...base.lastEvent, componentStack } }));
+    expect(texto).toContain('Componentes: (não disponível)\n');
+  });
+
+  it('BUG-002 · horário local com fuso e UTC sem milissegundos', () => {
+    const texto = formatGroupReport(
+      grupo({ firstAt: '2026-11-06T17:10:07.123Z', lastAt: '2026-11-06T17:10:07.123Z' }),
+    );
+    expect(texto).toContain('Última vez: 06/11 14:10 (UTC-3) · 2026-11-06T17:10:07Z');
   });
 
   it('todos: título com a quantidade e um bloco por grupo, separados por linha em branco', () => {

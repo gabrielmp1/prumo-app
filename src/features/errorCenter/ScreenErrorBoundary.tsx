@@ -1,8 +1,9 @@
 import type { ErrorBoundaryProps } from 'expo-router';
 import { useEffect } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 
 import { CODES, reportFatal } from '../../observability';
+import { Screen } from '../../ui/Screen';
 
 // Erros já reportados: o Expo Router pode renderizar a mesma tela de erro mais de uma vez.
 const reported = new WeakSet<Error>();
@@ -19,7 +20,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   }, [error]);
 
   return (
-    <View style={styles.container}>
+    <Screen contentStyle={styles.container}>
       <Text accessibilityRole="header" style={styles.message}>
         {CODES['UI-001'].userMessage}
       </Text>
@@ -31,7 +32,7 @@ export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
       >
         <Text style={styles.buttonText}>Tentar de novo</Text>
       </Pressable>
-    </View>
+    </Screen>
   );
 }
 

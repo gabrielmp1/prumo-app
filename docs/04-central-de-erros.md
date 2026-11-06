@@ -127,15 +127,24 @@ Como foi implementado (P0-S0-07):
 
 Formato real do relatório (um grupo; "Copiar tudo" junta todos sob um título com a quantidade):
 ```
-## Erro PLN-003 (x4) — planner
-Severidade: warning · Primeira vez: <ISO> · Última vez: <ISO>
+## Erro UI-001 (x2) — ui
+Severidade: fatal
+Primeira vez: 06/11 14:05 (UTC-3) · 2026-11-06T17:05:00Z
+Última vez: 06/11 14:10 (UTC-3) · 2026-11-06T17:10:07Z
 Mensagem: ...
 Contexto: {...}                      (ou "(nenhum)")
-Tela: /dia                           (ou "(desconhecida)")
-Trilha: nav:/dia → ui:toque bloco    (10 últimas ações; "(+N anteriores)" quando há mais)
+Tela: /                              (ou "(desconhecida)")
+Componentes: SimulatedCrash > SimulateErrorButton > View   (8 primeiros; ou "(não disponível)")
+Trilha: nav:/ → ui:toque bloco       (10 últimas ações; "(+N anteriores)" quando há mais)
 Pilha:                               (até 15 linhas, num bloco de código; ou "Pilha: (nenhuma)")
-Versão: 0.3.0 (sprint 3) · android 34
+    at SimulatedCrash (bundle:100374:20)     ← URL do bundle encurtada
+Versão: 0.0.1 (sprint 0) · android 34
 ```
+- **Componentes:** quando uma tela quebra, o React Native anexa a pilha de componentes ao erro
+  (`error.componentStack`); a Central guarda e mostra do componente que quebrou para fora.
+- **Filtro de privacidade:** o texto copiado passa por `sanitizeReport()` (`src/observability/sanitize.ts`):
+  URLs de servidor viram `<url>`, a pasta do usuário (`C:\Users\nome`, `/home/nome`, `/Users/nome`)
+  vira `<usuário>` e e-mails viram `<e-mail>`. A URL do bundle vira `bundle:linha:coluna`.
 
 ## Autodiagnóstico (`selfTest.ts`)
 
@@ -247,7 +256,9 @@ na Central, com severidade `warning`, a menos que a verificação diga outra.
 2. A tela da Central e o atalho somem do build (`if (__DEV_CENTER__)` + eliminação de código morto).
 3. `SentryTransport` ativo, com:
    - `scrub()`: remove títulos, notas, nomes de arquivo, e-mails e telefones do contexto e da trilha;
-     mantém só códigos, IDs, contagens, durações e nomes de telas.
+     mantém só códigos, IDs, contagens, durações e nomes de telas. **Obrigatório também:** passar
+     mensagem, pilha e relatório por `sanitizeReport()` (já existe desde o BUG-002), que remove URLs
+     de servidor, pastas do usuário e e-mails.
    - Amostragem: 100% de `fatal` e `error`; 10% de `warning`.
    - `release` = versão do app; `environment` = `production`.
 4. Alertas: regra no Sentry para `fatal` (imediato) e para erro novo (diário) → e-mail/Discord da equipe.
