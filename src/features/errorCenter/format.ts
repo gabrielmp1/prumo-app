@@ -42,18 +42,75 @@ export function formatLocalAndUtc(iso: string): string {
   return `${formatWhen(iso)} (${utcOffsetLabel(iso)}) · ${utc}`;
 }
 
-const MAX_COMPONENTS = 8;
+const MAX_COMPONENTS = 5;
+
+// Componentes que não são nossos: primitivos do React Native e peças internas do React,
+// do Expo Router e da navegação. Só ajudam a achar o erro os componentes do app.
+const INTERNAL_NAMES = new Set([
+  'View',
+  'Text',
+  'Image',
+  'ScrollView',
+  'FlatList',
+  'SectionList',
+  'TextInput',
+  'Pressable',
+  'TouchableOpacity',
+  'TouchableHighlight',
+  'TouchableWithoutFeedback',
+  'Modal',
+  'KeyboardAvoidingView',
+  'StatusBar',
+  'ActivityIndicator',
+  'Suspense',
+  'Fragment',
+  'StrictMode',
+  'Unknown',
+  'Anonymous',
+  'Route',
+  'Try',
+  'ExpoRoot',
+  'Slot',
+  'Stack',
+  'Link',
+  'SceneView',
+  'CellRenderer',
+  'AppContainer',
+  'LogBoxStateSubscription',
+]);
+
+const INTERNAL_PATTERNS = [
+  /^RCT/, // componentes nativos do React Native (RCTView, RCTText...)
+  /^RNS/, // react-native-screens
+  /^RNC/, // bibliotecas da comunidade (ex.: react-native-safe-area-context)
+  /^Animated/,
+  /^Virtualized/,
+  /^Native/,
+  /^Base[A-Z]/,
+  /^With[A-Z]/,
+  /Provider(Compat)?$/,
+  /Context$/,
+  /Navigator$/,
+  /Navigation[A-Z]?\w*$/,
+  /^Screen(Stack|Container|ContentWrapper)/,
+  /^Debugging/,
+];
+
+function isInternal(name: string): boolean {
+  return INTERNAL_NAMES.has(name) || INTERNAL_PATTERNS.some((p) => p.test(name));
+}
 
 /**
- * Pilha de componentes do React ("in X (at ...)" ou "at X (...)") → "X > Y > Z",
- * do componente que quebrou para fora. Undefined se não houver nomes.
+ * Pilha de componentes do React ("in X (at ...)" ou "at X (...)") → "X > Y > Z", do componente
+ * que quebrou para fora, só com os componentes do app (até 5). Undefined se não sobrar nenhum.
  */
 export function componentPath(componentStack: string | undefined): string | undefined {
   if (!componentStack) return undefined;
   const names = componentStack
     .split('\n')
     .map((line) => /^\s*(?:in|at)\s+([^\s(]+)/.exec(line)?.[1])
-    .filter((name): name is string => name !== undefined);
+    .filter((name): name is string => name !== undefined && !isInternal(name))
+    .filter((name, i, all) => name !== all[i - 1]);
   if (names.length === 0) return undefined;
   const shown = names.slice(0, MAX_COMPONENTS);
   const hidden = names.length - shown.length;

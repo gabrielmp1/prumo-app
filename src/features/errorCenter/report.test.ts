@@ -48,7 +48,7 @@ describe('P0-S0-07 · relatório da Central de Erros', () => {
         'Mensagem: Tarefa não cabe até o prazo',
         'Contexto: {"tarefas":2,"dia":"2026-11-06"}',
         'Tela: /dia',
-        'Componentes: SimulatedCrash > SimulateErrorButton > RCTView > View',
+        'Componentes: SimulatedCrash > SimulateErrorButton',
         'Trilha: nav:/dia → ui:toque bloco → data:salvar tarefa',
         'Pilha:',
         '```',
@@ -111,16 +111,71 @@ describe('P0-S0-07 · relatório da Central de Erros', () => {
   it('pilha de componentes no formato "at" (React 19) também vira lista de nomes', () => {
     const base = grupo();
     const componentStack =
-      '\n    at SimulatedCrash (http://x/entry.bundle:1:2)\n    at View (<anonymous>)';
+      '\n    at SimulatedCrash (http://x/entry.bundle:1:2)\n    at HomeScreen (<anonymous>)';
     const texto = formatGroupReport(grupo({ lastEvent: { ...base.lastEvent, componentStack } }));
-    expect(texto).toContain('Componentes: SimulatedCrash > View\n');
+    expect(texto).toContain('Componentes: SimulatedCrash > HomeScreen\n');
   });
 
-  it('pilha de componentes longa: 8 nomes e quantos ficaram de fora', () => {
+  it('pilha de componentes longa: 5 nomes nossos e quantos ficaram de fora', () => {
     const base = grupo();
-    const componentStack = Array.from({ length: 11 }, (_, i) => `    in C${i + 1}`).join('\n');
+    const componentStack = Array.from({ length: 8 }, (_, i) => `    in C${i + 1}`).join('\n');
     const texto = formatGroupReport(grupo({ lastEvent: { ...base.lastEvent, componentStack } }));
-    expect(texto).toContain('Componentes: C1 > C2 > C3 > C4 > C5 > C6 > C7 > C8 > … (+3)\n');
+    expect(texto).toContain('Componentes: C1 > C2 > C3 > C4 > C5 > … (+3)\n');
+  });
+
+  // Caso real do celular: "SimulatedCrash > SimulateErrorButton > RCTView > View > … (+87)".
+  it('esconde componentes internos do React Native, do Expo Router e da navegação', () => {
+    const base = grupo();
+    const internos = [
+      'SimulatedCrash',
+      'SimulateErrorButton',
+      'RCTView',
+      'View',
+      'RCTView',
+      'View',
+      'Screen',
+      'HomeScreen',
+      'Index',
+      'Route',
+      'Try',
+      'SceneView',
+      'RNSScreen',
+      'AnimatedComponent',
+      'ScreenStack',
+      'NativeStackNavigator',
+      'SafeAreaProviderCompat',
+      'ThemeContext',
+      'ExpoRoot',
+      'Text',
+      'RCTText',
+      'ScrollView',
+      'RCTScrollContentView',
+      'Pressable',
+      'Suspense',
+      'Unknown',
+      'Anonymous',
+      'RootLayout',
+      'AppContainer',
+    ];
+    const componentStack = internos.map((n) => `    in ${n}`).join('\n');
+    const texto = formatGroupReport(grupo({ lastEvent: { ...base.lastEvent, componentStack } }));
+    expect(texto).toContain(
+      'Componentes: SimulatedCrash > SimulateErrorButton > Screen > HomeScreen > Index > … (+1)\n',
+    );
+  });
+
+  it('nomes repetidos em sequência aparecem uma vez só', () => {
+    const base = grupo();
+    const componentStack = '    in Lista\n    in Lista\n    in Tela';
+    const texto = formatGroupReport(grupo({ lastEvent: { ...base.lastEvent, componentStack } }));
+    expect(texto).toContain('Componentes: Lista > Tela\n');
+  });
+
+  it('pilha só com componentes internos: "(não disponível)"', () => {
+    const base = grupo();
+    const componentStack = '    in RCTView\n    in View';
+    const texto = formatGroupReport(grupo({ lastEvent: { ...base.lastEvent, componentStack } }));
+    expect(texto).toContain('Componentes: (não disponível)\n');
   });
 
   it('BUG-002 · horário local com fuso e UTC sem milissegundos', () => {
