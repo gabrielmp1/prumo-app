@@ -28,7 +28,7 @@ _(vazio)_
 
 ## Feito
 
-- [x] P0-S0-01 · Criar o projeto Expo com TypeScript strict (2026-11-05)
+- [x] P0-S0-01 · Criar o projeto Expo com TypeScript strict (2026-11-05; conferida no Samsung pelo Expo Go, SDK 58, via túnel)
 
 ## Bugs
 
