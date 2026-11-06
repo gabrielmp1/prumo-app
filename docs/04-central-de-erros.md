@@ -41,6 +41,18 @@ withReporting(code, fn)                     // embrulha função async: try/catc
 measure(name, fn, budgetMs)                 // mede tempo; acima do orçamento → PRF-001
 ```
 
+Detalhes da implementação (P0-S0-04, `src/observability`):
+- `withReporting(code, fn, { fallback }?)` devolve uma nova função com os mesmos parâmetros.
+  Em erro: reporta e repropaga o mesmo erro, ou devolve `fallback` se ele foi passado.
+- `measure` aceita função síncrona ou assíncrona (mede até a promessa terminar). Se a função
+  lança, o erro segue adiante e o tempo não é reportado. Contexto do `PRF-001`: `{ operacao, ms, orcamentoMs }`.
+- `check` devolve a própria condição; em `dev`/`prod`, a falha é reportada com severidade `error`.
+- `fingerprint` = `código|mensagem normalizada` (números, uuids e ids hexadecimais viram `#`;
+  espaços e maiúsculas ignorados).
+- Um transporte que falha não impede os outros de receber o evento.
+- Para testes com relógio falso, `createErrorCenter({ now, monotonic, newId, ... })` cria uma
+  instância isolada; o app usa a instância padrão exportada por `src/observability/index.ts`.
+
 Transportes (`ErrorTransport`), escolhidos por `EXPO_PUBLIC_ERROR_MODE`:
 
 | Modo | Transportes ativos | Uso |
@@ -48,6 +60,9 @@ Transportes (`ErrorTransport`), escolhidos por `EXPO_PUBLIC_ERROR_MODE`:
 | `test` | `TestTransport` (memória) | Jest — falha o teste em erro inesperado |
 | `dev` | `DevCenterTransport` (SQLite `dev_error_log`) + `ConsoleTransport` | Desenvolvimento e teste fechado |
 | `prod` | `SentryTransport` (com `scrub()`) + `DevCenterTransport` desligado | Lançamento |
+
+Sem a variável: `test` no Jest, `dev` em desenvolvimento (`__DEV__`), `prod` no build final; valor
+desconhecido cai nesse padrão. Até a P3-S13-03, o modo `prod` não tem transporte nenhum: nada sai do aparelho.
 
 ## Capturas automáticas (instaladas no Sprint 0)
 
@@ -169,7 +184,6 @@ Códigos previstos pelas histórias (cada história os cria quando for implement
 | `PAY-001` / `PAY-002` | error | Falha de compra / assinatura inconsistente | P3-S13-01 |
 | `TUR-001` / `TUR-002` | error | Falha ao publicar / conflito de cópia | P3-S15-02 |
 | `WPP-001` … `WPP-003` | error | Envio, modelo rejeitado, processamento | P3-S17 |
-
 | `SEC-001` | error | Falha de autenticação ao decifrar (dado alterado ou chave errada) | P1-S1-05 |
 | `SEC-002` | fatal | Chave do banco indisponível no Keystore | P1-S1-05 |
 | `SEC-101` | autodiag. | Arquivo de anexo sem cifra ou banco sem SQLCipher | P1-S1-05 |
