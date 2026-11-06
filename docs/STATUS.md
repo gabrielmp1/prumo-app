@@ -8,7 +8,6 @@
 
 ## A fazer (em ordem)
 
-- [ ] P0-S0-04 · Núcleo da Central de Erros
 - [ ] P0-S0-05 · Testes falham em erro inesperado
 - [ ] P0-S0-06 · Capturas globais e persistência
 - [ ] P0-S0-07 · Tela da Central de Erros
@@ -28,7 +27,8 @@ _(vazio)_
 
 - [x] P0-S0-01 · Criar o projeto Expo com TypeScript strict (2026-11-05; conferida no Samsung pelo Expo Go, SDK 58, via túnel)
 - [x] P0-S0-02 · Qualidade automática: lint, formatação, testes, cobertura (2026-11-05)
-- [x] P0-S0-03 · Integração contínua no GitHub (2026-11-06; CI verde na branch antes de juntar)
+- [x] P0-S0-03 · Integração contínua no GitHub (2026-11-06; CI verde na branch antes de juntar; CI da `main` verde)
+- [x] P0-S0-04 · Núcleo da Central de Erros (2026-11-06; CI verde na branch)
 
 ## Bugs
 
@@ -61,6 +61,7 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 - 2026-11-05 · P0-S0-02 · Os testes que conferem regras do ESLint rodam o ESLint num processo separado (`test/tools/lint-snippets.cjs`): o ESLint carrega a configuração com `import()` dinâmico, que o Jest não suporta.
 - 2026-11-05 · P0-S0-02 · Exemplo do core: `src/core/time.ts` (`toMinutes`/`fromMinutes`, "HH:MM" ↔ minutos, com teste de propriedade). Será usado pelo encaixe do dia (`schedule`).
 - 2026-11-05 · P0-S0-02 · Cobertura medida em `src/**` e `app/**`; limite de 90% (linhas e ramos) só em `src/core`. Conferido que cai abaixo do limite → `npm run test:coverage` falha.
+- 2026-11-06 · P0-S0-04 · Central de Erros em `src/observability`: catálogo `codes.ts` (14 códigos iniciais, conferido contra a tabela do doc 04 por teste), `createErrorCenter` (instância isolada, com relógios injetáveis) e instância padrão em `index.ts`. Transportes em `transports/` (`testTransport`, `consoleTransport`, `devCenterTransport` em memória; SQLite na P0-S0-06). O modo `prod` não tem transporte até a P3-S13-03. `ConsoleTransport` é o único lugar que escreve no console.
 - Pendência · **E2E pendente de rodar**: fluxos `.yaml` são escritos normalmente; antes de fechar a Sprint 0, guiar a instalação do Java 17, do Android Studio (emulador) e do Maestro.
 - Pendência · Avisar antes da primeira história que não roda no Expo Go (provavelmente P1-S1-05, SQLCipher) e explicar o development build.
 - 2026-11-06 · P0-S0-03 · Repositório **privado** em `github.com/gabrielmp1/prumo-app`. No plano grátis, as regras de proteção de branch não são aplicadas em repositório privado: vale o combinado de só juntar na `main` com a CI verde. O passo a passo do README fica para quando o repositório virar público ou o plano mudar.
@@ -72,4 +73,4 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 
 | Sprint | Histórias feitas | Bugs abertos/fechados | Erros na Central (novos) | Cobertura core | `plan()` (ms) |
 |---|---|---|---|---|---|
-| S0 | 3 | 1 / 1 | — | 100% | — |
+| S0 | 4 | 1 / 1 | — | 100% | — |
