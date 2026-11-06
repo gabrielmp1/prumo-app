@@ -15,7 +15,7 @@
 
 ## Fazendo
 
-- [ ] P0-S0-06 · Capturas globais e persistência
+_(vazio)_
 
 ## Revisão
 
@@ -28,6 +28,7 @@ _(vazio)_
 - [x] P0-S0-03 · Integração contínua no GitHub (2026-11-06; CI verde na branch antes de juntar; CI da `main` verde)
 - [x] P0-S0-04 · Núcleo da Central de Erros (2026-11-06; CI verde na branch)
 - [x] P0-S0-05 · Testes falham em erro inesperado (2026-11-06; CI verde na branch)
+- [x] P0-S0-06 · Capturas globais e persistência (2026-11-06; CI verde na branch; **E2E pendente de rodar**)
 
 ## Bugs
 
@@ -62,6 +63,10 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 - 2026-11-05 · P0-S0-02 · Cobertura medida em `src/**` e `app/**`; limite de 90% (linhas e ramos) só em `src/core`. Conferido que cai abaixo do limite → `npm run test:coverage` falha.
 - 2026-11-06 · P0-S0-04 · Central de Erros em `src/observability`: catálogo `codes.ts` (14 códigos iniciais, conferido contra a tabela do doc 04 por teste), `createErrorCenter` (instância isolada, com relógios injetáveis) e instância padrão em `index.ts`. Transportes em `transports/` (`testTransport`, `consoleTransport`, `devCenterTransport` em memória; SQLite na P0-S0-06). O modo `prod` não tem transporte até a P3-S13-03. `ConsoleTransport` é o único lugar que escreve no console.
 - 2026-11-06 · P0-S0-05 · `test/setup.ts` (em `jest.setupFilesAfterEnv`) pega o `TestTransport` da instância padrão e, depois de cada teste, falha se houve erro reportado sem `expectReportedError(código)`; a expectativa vale só para o teste atual. `expectReportedError` é global nos testes, como `expect`. Prova de ponta a ponta em `test/setup.behavior.test.ts`, que roda o Jest sobre `test/fixtures/unexpected-errors.fixture.ts` (arquivo que só roda nesse teste).
+- 2026-11-06 · P0-S0-06 · Central de Erros grava num banco próprio (`prumo-dev-errors.db`, tabela `dev_error_log`), separado do banco principal, com SQL direto (sem Drizzle): é uma tabela só de desenvolvimento e não deve depender do banco principal abrir. O Drizzle entra com o banco principal (P1-S1-01).
+- 2026-11-06 · P0-S0-06 · Testes de integração usam o SQLite que vem no Node 24 (`node:sqlite`, em `test/tools/nodeSqlite.ts`) com a mesma interface do `expo-sqlite` (`src/data/sql.ts`): o mesmo SQL roda no teste e no celular, sem dependência nova.
+- 2026-11-06 · P0-S0-06 · Toda tela nova em `app/` deve ter `export { ErrorBoundary } from '../src/features/errorCenter'`. O botão "Simular erro" (discreto, no rodapé da tela inicial) só aparece em modo dev.
+- 2026-11-06 · P0-S0-06 · No React Native Testing Library 14, `fireEvent` é assíncrono: sempre `await fireEvent.press(...)` (sem o `await`, um teste contamina o seguinte).
 - Pendência · **E2E pendente de rodar**: fluxos `.yaml` são escritos normalmente; antes de fechar a Sprint 0, guiar a instalação do Java 17, do Android Studio (emulador) e do Maestro.
 - Pendência · Avisar antes da primeira história que não roda no Expo Go (provavelmente P1-S1-05, SQLCipher) e explicar o development build.
 - 2026-11-06 · P0-S0-03 · Repositório **privado** em `github.com/gabrielmp1/prumo-app`. No plano grátis, as regras de proteção de branch não são aplicadas em repositório privado: vale o combinado de só juntar na `main` com a CI verde. O passo a passo do README fica para quando o repositório virar público ou o plano mudar.
@@ -73,4 +78,4 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 
 | Sprint | Histórias feitas | Bugs abertos/fechados | Erros na Central (novos) | Cobertura core | `plan()` (ms) |
 |---|---|---|---|---|---|
-| S0 | 5 | 1 / 1 | — | 100% | — |
+| S0 | 6 | 1 / 1 | — | 100% | — |

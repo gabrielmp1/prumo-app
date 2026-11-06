@@ -1,0 +1,17 @@
+# P0-S0-06 · "Simular erro" (só dev) → tela de erro → "Tentar de novo".
+# E2E PENDENTE DE RODAR: precisa do Maestro + emulador (ver STATUS).
+# Roda no Expo Go com o servidor do Expo ligado (npx expo start). A P0-S0-07 acrescenta
+# a abertura da Central de Erros e a conferência do UI-001 na lista.
+appId: host.exp.exponent
+---
+- launchApp:
+    clearState: true
+- openLink: exp://127.0.0.1:8081
+- extendedWaitUntil:
+    visible: 'Prumo'
+    timeout: 60000
+- tapOn:
+    id: 'simular-erro'
+- assertVisible: 'Algo deu errado nesta tela.'
+- tapOn: 'Tentar de novo'
+- assertVisible: 'Prumo'
