@@ -8,7 +8,6 @@
 
 ## A fazer (em ordem)
 
-- [ ] P0-S0-01 · Criar o projeto Expo com TypeScript strict
 - [ ] P0-S0-02 · Qualidade automática: lint, formatação, testes, cobertura
 - [ ] P0-S0-03 · Integração contínua no GitHub
 - [ ] P0-S0-04 · Núcleo da Central de Erros
@@ -25,7 +24,7 @@ _(vazio)_
 
 ## Revisão
 
-_(vazio)_
+- [ ] P0-S0-01 · Criar o projeto Expo com TypeScript strict — pronta na branch `feat/P0-S0-01-expo-project`; junta na `main` quando `npm run check` passar na pasta definitiva (ver BUG-001)
 
 ## Feito
 
@@ -34,6 +33,8 @@ _(vazio)_
 ## Bugs
 
 _(formato: `BUG-001 · descrição · código de erro · história relacionada · status`)_
+
+- BUG-001 · Jest (jest-expo) quebra quando o caminho da pasta tem parênteses, ex. `Nova pasta (9)`: o mock automático lê o caminho pelo rastro de pilha · ambiente · P0-S0-01 · aberto (solução: mover o projeto para um caminho sem parênteses)
 
 ## Ideias (não entram na sprint sem passar pelo planejamento)
 
@@ -45,6 +46,14 @@ _(formato: `BUG-001 · descrição · código de erro · história relacionada �
 
 - 2026-11-05 · Design escolhido: "Caderno" (estrutura da Opção 1 + identidade da Opção 4). Ver `docs/referencia/design.md`.
 - 2026-11-05 · Tema escuro: versão B (botões cor de giz, sem amarelo, grifado lavanda). Versão 1 guardada como alternativa.
+- 2026-11-05 · Versões instaladas (P0-S0-01): Expo SDK 58 (`expo` 58.0.23), React Native 0.88.1, React 19.3.0, TypeScript 6.0, Expo Router 58.0, Jest 30.5 + jest-expo 58, React Native Testing Library 14.1. Entram no ADR-001 (P0-S0-10).
+- 2026-11-05 · Rotas ficam em `app/` na raiz, como no doc 02 (o modelo do SDK 58 usa `src/app/`; o Expo Router aceita os dois).
+- 2026-11-05 · ESLint mínimo (`eslint-config-expo`) já instalado na P0-S0-01 para o `npm run check` funcionar desde o início; as regras do projeto entram na P0-S0-02.
+- 2026-11-05 · `react-dom` 19.3.0 instalado só para fechar a dependência do Expo Router (web) com a mesma versão do `react`; sem ele o npm não resolve as dependências.
+- 2026-11-05 · Padrões combinados: 9 ADRs (001 a 009) na P0-S0-10; branches locais por história até a CI existir (P0-S0-03); `.gitattributes` com quebra de linha LF; pacotes só locais e justificados no commit.
+- Pendência · **E2E pendente de rodar**: fluxos `.yaml` são escritos normalmente; antes de fechar a Sprint 0, guiar a instalação do Java 17, do Android Studio (emulador) e do Maestro.
+- Pendência · Avisar antes da primeira história que não roda no Expo Go (provavelmente P1-S1-05, SQLCipher) e explicar o development build.
+- Pendência · P0-S0-03: guiar a criação do repositório vazio no GitHub e a proteção da branch.
 
 ## Métricas por sprint
 
