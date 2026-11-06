@@ -42,8 +42,8 @@ describe('P0-S0-04 · instância padrão', () => {
     const [transporte] = errorCenter.transports;
     if (!(transporte instanceof TestTransport)) throw new Error('esperava TestTransport');
 
+    expectReportedError('PLN-003');
     reportWarning('PLN-003', 'tarefa não cabe');
     expect(transporte.events.at(-1)?.code).toBe('PLN-003');
-    transporte.reset();
   });
 });
