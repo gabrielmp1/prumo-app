@@ -6,6 +6,41 @@ App de organização para estudantes que planeja sozinho, construído com o **Cl
 história por história, sempre com testes. Aqui estão o código, o plano completo, as regras
 de trabalho e o protótipo de referência. O andamento fica em `docs/STATUS.md`.
 
+> **Estado atual:** Fase 0 (Fundação). O projeto, os testes, a integração contínua e a
+> Central de Erros já funcionam; as telas do produto começam na Fase 1.
+
+## Autoria
+
+Projeto idealizado, modelado e conduzido por **Gabriel Pessanha** ([@gabrielmp1](https://github.com/gabrielmp1)).
+O código foi escrito pelo **[Claude Code](https://claude.com/claude-code)** (IA da Anthropic),
+trabalhando sob a minha direção e supervisão.
+
+**O que é meu:**
+
+- **Concepção do produto:** o problema, o público, os princípios e as métricas de sucesso
+  (`docs/01-visao-produto.md`).
+- **Modelagem e arquitetura:** escolha da stack, separação do `src/core` puro, modelo de dados,
+  estratégia offline-first e de segurança e privacidade (`docs/02`, `docs/07`, `docs/adr/`).
+- **Metodologia:** backlog em histórias com critérios de aceite, sprints, Definition of Ready e
+  Definition of Done, TDD obrigatório e as regras que a IA segue em toda sessão (`CLAUDE.md`,
+  `docs/05-metodologia.md`, `.claude/commands/`).
+- **Qualidade e observabilidade:** pirâmide de testes, limites de cobertura, CI e o desenho da
+  Central de Erros (`docs/03`, `docs/04`).
+- **Design:** escolha da identidade visual e dos temas (`docs/referencia/design.md`).
+- **Controle e validação:** cada história é pedida, revisada e aceita por mim; testo no celular
+  (Samsung, via Expo Go), encontro e registro os bugs e decido quando algo entra na `main`.
+
+**O que é do Claude Code:** implementar cada história seguindo essas regras (testes primeiro,
+código, instrumentação de erros), propor soluções e manter o `docs/STATUS.md` atualizado.
+Nenhuma decisão de produto, de arquitetura ou de processo é tomada pela IA sem a minha aprovação.
+
+O objetivo também é mostrar uma forma de trabalhar: usar IA como ferramenta de engenharia
+com processo, testes e supervisão humana, e não como gerador de código sem controle.
+
+## Licença
+
+[MIT](LICENSE) © 2026 Gabriel Pessanha.
+
 ## O que tem aqui
 
 | Arquivo | Para que serve |
